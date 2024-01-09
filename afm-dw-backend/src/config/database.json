@@ -1,0 +1,29 @@
+{
+  "schema-hr": {
+    "driver": "pg",
+    "user": "",
+    "password": "",
+    "host": "localhost",
+    "database": "afm",
+    "port": "5432",
+    "schema": "hr"
+  },
+  "schema-ref": {
+    "driver": "pg",
+    "user": "",
+    "password": "",
+    "host": "localhost",
+    "database": "afm",
+    "port": "5432",
+    "schema": "ref"
+  },
+  "db": {
+    "driver": "pg",
+    "user": "",
+    "password": "",
+    "host": "localhost",
+    "database": "afm",
+    "port": "5432"
+  },
+  "sql-file": true
+}
