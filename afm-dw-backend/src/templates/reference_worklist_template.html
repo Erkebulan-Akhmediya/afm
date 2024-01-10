@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+ <html>
+    <head>
+        <mate charest="utf-8" />
+        
+        <title>Hello world!</title>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 12px;
+            }
+            h2 {
+                font-size: 16px;
+            }
+            .referenceTable td{
+                border: 1px solid #000;
+                padding: 1px;
+            }
+            .referenceTable td.head {
+                    text-align: center;
+                    font-weight: bold;
+            }
+            .clearfix {
+                overflow: auto;
+            }
+            .clearfix::after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+            .referenceTable td.text-left {
+                text-align: left;
+                padding-left: 2px;
+            }
+            .referenceTable .pad0 {
+                padding: 2px 3px;
+            }
+
+            .textUnderline {
+                border-bottom: 1px solid #000;
+                padding: 0 20px 5px 20px;
+                display: inline-block;
+                margin-bottom: 2px;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .headWrapper {
+                display: -webkit-flex;
+                -webkit-align-items: flex-end;
+                -webkit-justify-content: space-between;
+            }
+            @media print {
+                .new-page {
+                    page-break-before: always;
+                }
+            }
+            .text-h5 {
+                font-size: 10px;
+                font-weight: bold;
+                text-align: center;
+            }
+            tr, td { page-break-inside: avoid; }
+        </style>
+    </head>
+    <body>
+        <p class="text-h5 text-center font-weight-bold" style="text-align: center;">МЕМЛЕКЕТТІК ҚЫЗМЕТШІНІҢ ҚЫЗМЕТТIК ТIЗIМІ</p>
+        <p class="text-h5 text-center font-weight-bold" style="text-align: center;">ПОСЛУЖНОЙ СПИСОК ГОСУДАРСТВЕННОГО СЛУЖАЩЕГО</p>
+
+        <div class="headWrapper" style="display: flex; justify-content: space-between;">
+            <div class="headRef" style="width: 80%; padding-right: 25px;">
+                <p class="textUnderline" style="margin-bottom: 0;">Т.А.Ж. (болған жағдайда) / Ф.И.О. (при наличии)</p>
+                <p class="font-weight-bold text-center" style="margin-bottom: 0; text-align: end; width: 100%;"> <span style="width: 60%; text-align: center;" class="textUnderline bold">{{Surname}} {{Name}} {{Middlename}}</span></p> <br>
+                <p class="textUnderline" style="margin-bottom: 0;">Жұмыс орны, лауазымы, санаты / Место работы, должность, категория</p>
+                <p class="font-weight-bold text-center" style="margin-bottom: 0; text-align: end; width: 100%;"> <span style="width: 60%; text-align: center;" class="textUnderline bold">{{Position}}</span></p><br>
+                <p class="textUnderline" style="margin-bottom: 0;">ЖСН / ИИН</p>
+                <p class="font-weight-bold text-center" style="margin-bottom: 0; text-align: end; width: 100%;"> <span style="width: 60%; text-align: center;" class="textUnderline bold">{{IIN}}</span></p>
+            </div>
+            <img src="{{src}}" style="width: 100px; object-fit: cover;" alt="">
+        </div>
+        
+        <table class="referenceTable mb-2" style="border-collapse: collapse; margin-top: 10px; width:100%;">
+            <tr>
+                <td colspan="2"  style="width: 50%;">Туылғанкүні (күнi, айы, жылы)/ <br>
+                Дата рождения (число, месяц, год)</td>
+                <td colspan="2"  style="width: 50%;">{{Birthday}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"  style="width: 50%;">Туылғанжерi/Место рождения</td>
+                <td colspan="2"  style="width: 50%;">{{Place_Of_Birth}}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">Ұлты/Национальность *</td>
+                <td style="width: 25%;">{{Nationality}}</td>
+                <td style="width: 25%;">Бiлiмi/Образование</td>
+                <td style="width: 25%;">{{Education}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"  style="width: 50%;">Оқу орнын бiтiрген жылы және оның атауы/ <br>
+                    Год окончания и наименование учебного заведения</td>
+                <td colspan="2" v-html="Institution.replaceAll('\n', '<br>')"></td>
+            </tr>
+            <tr>
+                <td colspan="2"  style="width: 50%;">Мамандығы/Специальность</td>
+                <td colspan="2"  style="width: 50%;">{{Qualification}}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">Шетел тілдерін білуі / Владение 
+                    иностранными языками</td>
+                <td style="width: 25%;">{{Languages}}</td>
+                <td style="width: 25%;">Ғылыми дәрежесi, ғылыми атағы/
+                    Ученая степень, ученое звание</td>
+                <td style="width: 25%;">{{Academic_Degree}}</td>
+            </tr>
+            <tr>
+                <td colspan="2"  style="width: 50%;">Мемлекеттік наградалары, құрметті атақтары және мерекелік медальдары/ <br>
+                     Государственные награды, почетные звания и юбилейные медали</td>
+                <td colspan="2"  style="width: 50%;">{{Rank}}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">Арнайы тексеру нәтижелерi/
+                    Результаты специальной проверки</td>
+                <td style="width: 25%;">{{Special_Test_Result}}</td>
+                <td style="width: 25%;">Әскери, арнайы атақтары, сыныптық 
+                    шені, біліктілік сыныбы, 
+                    дипломатиялық дәрежесі (жыл) / <br>
+                    Воинское, специальное звания, 
+                    классный чин, квалификационный 
+                    класс, дипломатический ранг (год)
+                </td>
+                <td style="width: 25%;">{{Diplomatic_Rank}}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">Мемлекеттік қызметке кір келтіретін 
+                    терiс қылық жасағаны үшін тәртiптiк 
+                    жаза қолданылғаны туралы мәлiмет / <br>
+                    Сведения о наложении дисциплинарных 
+                    взысканий за совершение 
+                    дисциплинарных проступков, 
+                    дискредитирующих государственную 
+                    службу</td>
+                <td style="width: 25%;">{{Corruption}}</td>
+                <td style="width: 25%;">Сыбайлас жемқорлық құқық 
+                    бұзушылық жасағаны үшiн 
+                    әкімшілік жаза қолданылғаны 
+                    туралы мәлiмет (қолданылған және 
+                    орындалған күні)/ <br>
+                    Сведения о наложении административного 
+                    взыскания за совершение 
+                    коррупционного правонарушения 
+                    (дата наложения и исполнения)
+                </td>
+                <td style="width: 25%;">{{Corruption_Adm}}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">Жалпы еңбек өтілі / 
+                Общий трудовой стаж</td>
+                <td style="width: 25%;">{{Work_Experience}}</td>
+                <td style="width: 25%;">Мемлекеттік қызметшінің ант 
+                    берген күні / Дата принесения 
+                    присяги государственным служащим
+                </td>
+                <td style="width: 25%;">{{Date_Of_Oath}}</td>
+            </tr>
+            <tr>
+                <td style="width: 25%;">Мемлекеттік қызмет өтілі / Стаж 
+                государственной службы</td>
+                <td style="width: 25%;">{{Work_Experience_State}}</td>
+                <td style="width: 25%;">Отбасылық жағдайы / Семейное положение</td>
+                <td style="width: 25%;" v-html="Family_Status.replaceAll('\n', '<br> ')"></td>
+            </tr>
+        </table>
+        <p>* қалауы бойынша толтырылады/заполняется по желанию</p>
+        <p>Мөрдің орны <br>
+        Место печати</p>
+        <br><br>
+        <p>М.П. <br>
+            М.О</p>
+        
+        <div class="new-page"></div>
+
+        <br>
+        <p class="text-h5 text-center font-weight-bold" style="text-align: center;">II. ЕҢБЕК ЖОЛЫ</p>
+        <p class="text-h5 text-center font-weight-bold" style="text-align: center;">ТРУДОВАЯ ДЕЯТЕЛЬНОСТЬ</p>
+
+        <table class="referenceTable mb-2" style="border-collapse: collapse; margin-top: 10px; width:100%;">
+            <tr>
+                <td colspan="2" class="head">Күні/Дата</td>
+                <td rowspan="2" class="head">Лауазымы, жұмыс орны, ұйымның орналасқан жерi /Должность, место работы, местонахождение организации</td>
+            </tr>
+            <tr>
+                <td class="head">қабылданған/приема</td>
+                <td class="head">босатылған/увольнения</td>
+            </tr>
+            {{#each Labor_Activity}}
+            <tr>
+                <td style="text-align: center;">{{Date_Start}}</td>
+                <td style="text-align: center;">{{Date_End}}</td>
+                <td class="pad0">{{Place_Of_Work}}</td>
+            </tr>
+            {{/each}}
+        </table>
+        <p>* қалауы бойынша толтырылады/заполняется по желанию</p>
+        <p>Персоналды басқару қызметінің (кадр қызметiнiң) басшысы / <br>
+            Руководитель службы управления персоналом (кадровой службы):
+        </p>
+        <br>
+        <p style="border-top: 1px solid black; text-align: center; width: 60%">(тегi, аты, әкесiнiң аты/фамилия, имя, отчество (при наличии))</p>
+        <p>Қолы/Подпись ________________ ___________ жыл/год  ______________________________  айы/месяц</p>
+        <br>
+        <p>Мөрдің орны <br>
+            Место печати</p>
+            <br><br>
+        <p>М.П. <br>
+        М.О</p>
+    </body>
+</html>    

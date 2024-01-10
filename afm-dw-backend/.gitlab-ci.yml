@@ -1,0 +1,32 @@
+stages:
+  - build
+  - apply
+
+before_script:
+  - uname -a
+  - docker info
+
+# Prod deploy
+
+prod-run-build:
+  environment: prod
+  stage: build
+  only:
+    - deploy-prod-env
+  script:
+    - export COMPOSE_FILE=docker-compose.prod.yml
+    - docker compose -f $COMPOSE_FILE build
+  tags:
+    - portal-prod
+
+prod-run-apply:
+  environment: prod
+  stage: apply
+  only:
+    - deploy-prod-env
+  script:
+    - export COMPOSE_FILE=docker-compose.prod.yml
+    - docker compose -f $COMPOSE_FILE build
+    - docker compose -f $COMPOSE_FILE up -d
+  tags:
+    - portal-prod

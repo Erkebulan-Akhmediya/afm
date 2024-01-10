@@ -1,0 +1,34 @@
+{
+    "test": {
+        "db": {
+            "user" : "afm",
+            "password" : "afm007",
+            "host" : "93.170.73.48",
+            "port" : 5432,
+            "db" : "afm"
+        },
+        "minio": {
+            "endPoint" : "93.170.73.48",
+            "port" : 9000,
+            "useSSL" : false,
+            "accessKey" : "minio",
+            "secretKey" : "BwZ4PAHUXpFTS2Gx"
+        }
+    },
+    "prod": {
+        "db": {
+            "user" : "afm",
+            "password" : "afm007",
+            "host" : "pgbouncer",
+            "port" : 5432,
+            "db" : "afm"
+        },
+        "minio": {
+            "endPoint" : "192.168.122.118",
+            "port" : 9000,
+            "useSSL" : false,
+            "accessKey" : "minio",
+            "secretKey" : "BwZ4PAHUXpFTS2Gx"
+        }
+    }
+}

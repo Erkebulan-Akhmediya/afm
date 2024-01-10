@@ -1,0 +1,290 @@
+{
+  "globalWords" : {
+    "ok": "Жақсы",
+    "show": "Көрсету",
+    "thisWeek": "Осы апта",
+    "all": "Барлығы",
+    "news": "Жаңалықтар",
+    "events": "Оқиғалар",
+    "departments": "Департаменттер",
+    "itemsPerPage": "Беттегі жол саны",
+    "cancel" : "Болдырмау",
+    "yes": "Иә",
+    "no": "Жоқ",
+    "clear" : "Тазалау",
+    "save" : "Сақтау",
+    "dateFrom" : "Бастап күні",
+    "dateTo" : "Бойынша күні",
+    "date" : "Күні",
+    "time" : "Уақыты",
+    "from" : "Кімнен",
+    "send" : "Жіберу",
+    "edit" : "Өзгерту",
+    "last_name" : "Тегі",
+    "first_name" : "Аты",
+    "middle_name" : "Әкесінің аты",
+    "accept" : "Растау",
+    "fullName" : "Аты-жөні",
+    "status" : "Жағдайы",
+    "name" : "Атауы",
+    "creator" : "Жасаушы",
+    "deleted" : "Жойылған",
+    "deletingError" : "Жою қатесі",
+    "saved" : "Сақталған",
+    "number" : "Нөмірі",
+    "search" : "Іздеу",
+    "reset" : "Ысыру",
+    "addFile" : "Файлды қосу",
+    "subType": "Кіші түрі",
+    "type": "todo translate Тип",
+    "searchRequest" : "Іздеу сұратуы"
+  },
+  "approve" : {
+    "approver" : "Келісуші",
+    "purposeDescription" : "Себебін сипаттау",
+    "dateSendToApprove" : "Келісуге жіберілген күні",
+    "approve" : "Келісу",
+    "deny" : "Қабылдамау",
+    "comment" : "Пікір",
+    "new" : "Жаңа",
+    "onControl" : "Бақылауда",
+    "fullfilled" : "Орындалды",
+    "approved" : "Келісілді",
+    "denied" : "Қабылданбады",
+    "commentIsRequired" : "Бас тарту кезінде түсініктеме міндетті",
+    "approveError" : "Келісу қатесі",
+    "approverPosition" : "Келісушілердің ұстанымдары",
+    "approversNotSelected" : "Келісушілер таңдалмаған",
+    "approveOrders" : "Келісу тәртібі",
+    "sendToApprove" : "send to approve"
+  },
+  "request" : {
+    "requestDetails" : "request details",
+    "description": "description"
+  },
+  "passRequest": {
+    "fileListIsEmpty" : "Файлдар тізімі бос",
+    "approveListIsEmpty" : "Келісушілер тізімі бос",
+    "visitorListIsEmpty" : "Келушілер тізімі бос",
+    "newPassRequest" : "Жаңа өтінім",
+    "visitorInBuildingMoreThan15MinutesWarning" : "Назар аударыңыз, бұл келуші кездесу аяқталғаннан кейін ғимаратта 15 минуттан астам уақыт болды.",
+    "passRequestTitle" : "Рұқсаттамаға өтінімдер",
+    "plannedTitle" : "Жоспарланған",
+    "inBuildingTitle" : "Ғимаратта",
+    "leftTitle" : "Кеткендер",
+    "planned" : "Жоспарланған",
+    "visitorAlreadyExist" : "Пайдаланушы қосылған",
+    "visitorEditError" : "Келушіні өзгерту қатесі",
+    "entry" : "Кіру",
+    "exit" : "Шығу",
+    "visitorCreateError" : "Келушіні қосу қатесі",
+    "acceptEntry": "Кіруді растау",
+    "acceptExit": "Шығуды растау",
+    "meetingEnded" : "Кездесу аяқталды",
+    "createPassRequest" : "Өтінім жасау",
+    "visitHistory" : "Келу тарихы",
+    "visitHistoryIsEmpty" : "Келу тарихы бос",
+    "toBeAgreed" : "Келісуде",
+    "denied" : "Бас тартылды",
+    "editingPassRequest" : "Өтінімді өзгерту",
+    "purposeOfVisit" : "Сапардың мақсаты",
+    "note" : "Ескертпе",
+    "addingDate" : "Қосу күні",
+    "passRequestType" : "Тип пропуска",
+    "accompanying" : "Ілесіп жүруші",
+    "requestApprove" : "Рұқсаттамаға өтінім",
+    "accompanyingNotSelected" : "Ілесіп жүруші таңдалмаған",
+    "passRequestStatus" : "Өтінім жағдайы",
+    "planDateFrom" : "Жоспарлы күні",
+    "planDateTo" : "Бойынша жоспарлы күн",
+    "documents" : "Құжаттар",
+    "visitors" : "Келушілер",
+    "visitor" : "Келуші",
+    "approve" : "Келісу",
+    "selectFromList" : "Тізімнен таңдау",
+    "editVisitor" : "Пайдаланушыны өңдеу",
+    "createVisitor" : "Пайдаланушыны құру",
+    "residentRK" : "ҚР резиденті",
+    "documentType" : "Құжат түрі",
+    "documentNumber" : "Құжат нөмірі",
+    "sendApproveDate" : "Келісуге жіберілген күні",
+    "notResidentWarning" : "Бұл өтінімде ҚР бейрезиденті бар, сіз өтінімнің жіберілгеніне сенімдісіз",
+    "approveDate" : "Келісу күні",
+    "sended" : "Жіберілді",
+    "visitorList" : "Келушілер тізімі",
+    "applicant" : "Өтініш беруші",
+    "passRequestNumber" : "Өтінім нөмірі",
+    "acceptEntryQuestion" : "Сіз кіруді растайсыз", 
+    "acceptExitQuestion" : "Сіз шығуды растайсыз", 
+    "acceptEndMeetingQuestion" : "Сіз кездесудің аяқталғанын растайсыз",
+    "action" : "Әрекет",
+    "comment" : "Пікір",
+    "type" : "Түрі",
+    "endMeetingDate" : "Кездесудің аяқталу күні",
+    "entryDate" : "Келу күні",
+    "exitDate" : "Кету күні",
+    "lastStatus" : "Соңғы мәртебе",
+    "warnings" : {
+      "thisVisitorIsAlreadyInPassRequest" : "Бұл келуші осы өтінімде бар",
+      "lastNameMustHaveNoNumbers" : "Фамилияда сандар болмауы керек",
+      "firstNameMustHaveNoNumbers" : "Атауында сандар болмауы керек",
+      "middleNameMustHaveNoNumbers" : "Әкесінің атында сандар болмауы керек",
+      "lastNameIsRequired" : "\"Тегі\" толтыру үшін міндетті",
+      "firstNameIsRequired" : "\"Аты\" толтыру үшін міндетті",
+      "identificationNumberMustContainsOnlyNumbers" : "\"Құжат нөмірі\" сандардан тұруы керек",
+      "identificationNumberIsRequired" : "\"Құжат нөмірі\" толтыру үшін міндетті",
+      "dateFromIsRequired" : "\"Бастап күні\" толтыру үшін міндетті",
+      "dateToIsRequired" : "\"Бойынша күні\" толтыру үшін міндетті",
+      "purposeIsRequired" : "\"Келу мақсаты\" толтыру үшін міндетті",
+      "selectAccompanying" : "Еріп жүрушіні таңдаңыз",
+      "dateFromMustBeMoreThanDateTo" : "\"Бастап күні\" кеш болуы мүмкін емес \"бойынша күні\"",
+      "dateFromMustBeMoreThanCurrentDate" : "\"Бастап күні\" ағымдағы уақыттан ерте болуы мүмкін емес",
+      "dateFromAndDateToInOneDay" : "\"Бастап күні\" и \"Бойынша күні\" бір күн ішінде болуы керек",
+      "visitorListIsEmpty" : "Сіз бірде-бір келушіні қосқан жоқсыз"
+    },
+    "search" : {
+      "allVisitors" : "Барлық келушілер",
+      "myVisitors" : "Менің келушілерім",
+      "allPassRequests" : "Барлық өтінімдер",
+      "myPassRequests" : "Менің өтініштерім",
+      "typePassRequestNumber" : "Өтінім нөмірін енгізіңіз",
+      "typePassRequestNumberOrFullName" : "Құжаттың нөмірін немесе аты-жөнін енгізіңіз",
+      "typePassRequestNumberOrIdentificationNumberOrFullName" : "Құжат нөмірін, өтінім нөмірін немесе аты-жөніңізді енгізіңіз"
+    }
+  },
+  "mainPage" : {
+    "portalName_base" : "ҚР МБ",
+    "portalName_afm" : "ҚР ҚМА",
+    "mainMenu": {
+      "home" : "Басты бет",
+      "kpi" : "KPI және есептер",
+      "employees" : "Қызметкерлер",
+      "live" : "Барлық жаңалықтар",
+      "tests": "Тестілеу",
+      "calendar" : "Күнтізбе",
+      "employeesAll" : "Жалпы анықтама",
+      "chat" : "Чат",
+      "application" : "Информационные ресурсы",
+      "knowBase" : "Білім қоры",
+      "knowBaseGrade" : "Өзара бағалау",
+      "reference" : "Өтініштер",
+      "approval" : "Келісу",
+      "property" : "Басқару",
+      "exit": "Шығу"
+    },
+
+    "newsBlock": {
+      "news": "Жаңалықтар"
+    },
+
+    "eventsBlock": {
+      "events" : "Оқиғалар",
+      "showAll": "Барлығын көрсету"
+    },
+
+    "birthdayBlock": {
+      "birthDays" : "Туған күндер"
+    },
+
+    "search" : {
+      "globalSearch" : "Қызметкер бойынша іздеу",
+      "liveSearching" : "Сәйкестік жоқ"
+    }
+  },
+  
+  "searchPlaceholder": {
+    "globalSearchDep": "Бөлімдерді іздеу"
+  },
+
+  "employeesPage" : {
+    "department": "Ұйым",
+    "empDirectory" : "Бөлімшелер анықтамалығы"
+  },
+  "calendarPage" : {
+    "taskToday": "Бүгінгі істер",
+    "day" : "Күн",
+    "week" : "Апта",
+    "month" : "Ай",
+    "add" : "Қосу",
+    "addEventTitle": "Іс-шара қосу",
+    "updateEventTitle": "Іс-шараны жаңарту",
+    "addEventContent": "Дамудағы оқиғаны қосу мүмкіндігі",
+    "months" : ["Қаңтар","Ақпан","Наурыз","Сәуір","Мамыр","Маусым","Шілде","Тамыз","Қыркүйек","Қазан","Қараша","Желтоқсан"],
+    "weekDays": ["Жс", "Дс", "Сс", "Ср", "Бс", "Жс", "Сн"]
+  },
+
+  "liveNews": {
+    "allNews": "Барлық жаңалықтар",
+    "archive": "Мұрағат"
+  },
+
+  "knowBase": {
+    "knowBase": "Білім қоры",
+    "nameSubSection": "Бөліктің атауы",
+    "addSection": "Бөлім қосу",
+    "description": "Сипаттамасы",
+    "content": "Мазмұны"
+  },
+
+  "knowBaseGrade": {
+    "knowBaseGrade": "Өзара бағалау",
+    "nameSubSection": "Бөліктің атауы",
+    "addSection": "Бөлім қосу",
+    "description": "Сипаттамасы",
+    "content": "Мазмұны"
+  },
+
+  "employeeCard": {
+    "tabs": {
+      "statement": "Өтініштер",
+      "number": "Нөмір",
+      "type": "Түрі",
+      "from": "Қашан",
+      "dateFrom": "Бастап күн",
+      "dateTo": "Дейінгі күн",
+      "subType": "Қосымша түрі",
+      "comment": "Комментарий",
+      "status": "Күйі",
+      "noData": "Деректер жоқ"
+    }
+  },
+
+  "administration": {
+    "administration": "Басқару",
+    "users": "Пайдаланушылар",
+    "declinations": "Септелу",
+    "createUser": "Пайдаланушыны жасау",
+    "accessType": "Қолжетімділік түрі",
+    "personnelNum": "Персонал нөмірі",
+    "position": "Лауазымы",
+    "department": "Департамент",
+    "fullName": "ТАӘ",
+    "userName": "Пайдаланушының аты",
+    "viewPriority": "Қарау басымдығы",
+    "declinationWords": "Сөздердің септелуі",
+    "selectRefType": "Анықтамалықтың түрін таңдаңыз",
+    "collocation": "Сөз тіркесі",
+    "changedWord": "Өзгертілген сөз",
+    "case": "Септік",
+    "gender": "Тек",
+    "language": "Тіл",
+    "title": "Тақырып",
+    "type": "Түрі",
+    "status": "Күйі",
+    "publishDate": "Жариялау күні",
+    "actions": "Әрекет",
+    
+    "news": {
+      "name": "Жаңалық",
+      "add": "Жаңалық қосу",
+      "text": "Жаңалық мәтіні",
+      "date": "Жаңалық күні"
+    },
+    "events": {
+      "name": "Оқиға",
+      "text": "Оқиға мәтіні",
+      "date": "Оқиға күні",
+      "add": "Оқиға қосу"
+    }
+  }
+}

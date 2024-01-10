@@ -1,0 +1,107 @@
+version: '3.10'
+
+networks:
+  default: {}
+
+volumes:
+  postgres-data: {}
+
+x-shared-environment: &shared-environment
+  NODE_ENV: "production"
+
+  ENV: "PROD"
+
+  POSTGRES_DB: "afm"
+  POSTGRES_USER: "afm"
+  POSTGRES_PASSWORD: "afm007"
+  POSTGRES_HOST: "pgbouncer"
+  POSTGRES_PORT: "5432"
+
+  CONFIG_FILE: '/src/config/config_staging.json'
+
+  SOAP_WSDL_EMPLOYEE_FILE: "src/soap/wsdl/employee_test.wsdl"
+  LOGGER_LEVEL: "debug"
+  MIDDLEWARE_MORGAN_SKIP: "0"
+
+x-base-image: &base-image
+  restart: always
+  environment:
+    <<: *shared-environment
+  networks:
+    default: {}
+  logging:
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-minio-image: &minio-image
+  image: quay.io/minio/minio:RELEASE.2023-04-28T18-11-17Z
+  command: server --console-address ":9001" /data/
+  expose:
+    - "9000"
+    - "9001"
+  environment:
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: minioadmin
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+    interval: 30s
+    timeout: 20s
+    retries: 3
+
+services:
+  minio:
+    <<: *minio-image
+    hostname: minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    # volumes:
+    #   - /afm-hr/data/minio:/data
+  
+  postgres:
+    <<: *base-image
+    image: "postgres:13.3-alpine"
+    hostname: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "devdb"
+      POSTGRES_USER: "devuser"
+      POSTGRES_PASSWORD: "devpass"
+  
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+      DB_USER: "devuser"
+      DB_PASSWORD: "devpass"
+      DB_HOST: "postgres"
+      DB_NAME: "devdb"
+      POOL_MODE: "session"
+      ADMIN_USERS: "postgres,devuser"
+    ports:
+      - 5432:5432
+    depends_on:
+      - postgres
+
+  app: &app
+    <<: *base-image
+    hostname: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+      args:
+        - NODE_VERSION=16
+      shm_size: '2gb'
+    platform: linux/amd64
+    shm_size: '2gb'
+    command: start.sh
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - minio
+      - pgbouncer
+    ports:
+      - 8000:8000
