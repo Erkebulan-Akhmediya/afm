@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/registration',
-    name: 'registration',
+    name: 'Registration',
     component: () => import('@/views/Registration.vue')
   },
   {
@@ -255,10 +255,13 @@ const router = new VueRouter({
 })
 // eslint-disable-next-line no-unused-vars
 router.beforeResolve(async (to, from, next) => {
-  if (to.name !== 'Login' && !sessionStorage.getItem('token')) next({ path: '/login' })
+  if (
+    to.name !== 'Login' && 
+    to.name !== 'Registration' &&
+    !sessionStorage.getItem('token')
+  ) 
+    next({ path: '/login' })
   else next()
-
-
 })
 
 
@@ -267,16 +270,19 @@ router.beforeResolve(async (to, from, next) => {
 
 router.beforeEach((to, from, next) => {
 
-
-    if(JSON.parse(sessionStorage.getItem('userdata'))) {
-    if (JSON.parse(sessionStorage.getItem('userdata')).is_performer == true && !to.path.includes('servicerequest') && sessionStorage.getItem('token')) {
-
-            next({ path: '/servicerequests' });
-    } else {next()}
+  if(JSON.parse(sessionStorage.getItem('userdata'))) {
+    if (
+      JSON.parse(sessionStorage.getItem('userdata')).is_performer == true && 
+      !to.path.includes('servicerequest') && 
+      sessionStorage.getItem('token')
+    ) {
+      next({ path: '/servicerequests' });
+    } else {
+      next()
+    }
   }
 
-
-   let sessionStorage_transfer = function(event) {
+  let sessionStorage_transfer = function(event) {
     if(!event) { event = window.event; } 
     if(!event.newValue) return;          
     if (event.key === 'getSessionStorage') {
