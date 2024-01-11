@@ -54,6 +54,14 @@
               >
                 Вход
               </v-btn>
+              <v-btn 
+                :to="{ name: 'Registration' }" 
+                class="cta"
+                id="goToRegistration"
+                text
+              >
+                Регистрация
+              </v-btn>
             </v-form>
           </div>
         </div>
@@ -286,6 +294,10 @@
         width: 100%;
       }
     }
+  }
+
+  #goToRegistration {
+    font-size: 12px;
   }
 
   #backgroundVideo {

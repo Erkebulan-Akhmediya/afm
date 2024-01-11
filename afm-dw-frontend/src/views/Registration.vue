@@ -4,41 +4,50 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            experience: 1,
-            education: 1,
+            worklist: 1,
+            educations: 1,
             achievements: 1,
             certeficates: 1,
             languages: 1,
             sports: 1,
             additioals: 1,
+
             form: {
-                fullname: null,
-                birthdate: null,
-                iin: null,
-                citizenship: null,
+                firstname: null,
+                middlename: null,
+                lastname: null,
+                birth_date: null,
+                identification_number: null,
+                citizen: null,
                 adress: null,
-                phone: null,
-                birthPlace: null,
-                education: [{}],
-                experience: [{}],
+                phone_number: null,
+                birthplace: null,
+                educations: [{}],
+                worklist: [{}],
                 achievements: [{}],
                 certeficates: [{}],
                 languages: [{}],
                 sports: [{}],
                 hasAdministrativeFines: false,
-                adgs: [{}, {}],
+                adgs_test: [{}, {}],
                 additioals: [],
             },
+
+            birthdateMenu: false,
+            workStartDateMenu: false,
+            workEndDateMenu: false,
+            educationStartDateMenu: false,
+            educationEndDateMenu: false,
         };
     },
     methods: {
         addEducation() {
-            this.education++;
-            this.form.education.push({});
+            this.educations++;
+            this.form.educations.push({});
         },
         addExperience() {
-            this.experience++;
-            this.form.experience.push({});
+            this.worklist++;
+            this.form.worklist.push({});
         },
         addAchievement() {
             this.achievements++;
@@ -57,6 +66,8 @@ export default {
             this.form.sports.push({});
         },
         async submitForm() {
+            console.log(this.form);
+
             const formData = new FormData();
             for (let key in this.form) {
                 formData.append(key, this.form[key]);
@@ -83,24 +94,57 @@ export default {
     <v-container class="align-center">
         <v-form @submit.prevent="submitForm">
 
-            <v-text-field 
-                label="ФИО" 
-                v-model="form.fullname"
-            ></v-text-field>
+            <v-row>
+                <v-text-field 
+                    class="mx-2"
+                    label="Фамилия" 
+                    v-model="form.lastname"
+                    outlined
+                ></v-text-field>
+                <v-text-field 
+                    class="mx-2"
+                    label="Имя" 
+                    v-model="form.firstname"
+                    outlined
+                ></v-text-field>
+                <v-text-field 
+                    class="mx-2"
+                    label="Отчество" 
+                    v-model="form.middlename"
+                    outlined
+                ></v-text-field>
+            </v-row>
 
-            <v-text-field 
-                label="Дата рождения" 
-                v-model="form.birthdate"
-            ></v-text-field>
+            <v-menu 
+                v-model="birthdateMenu" 
+                :close-on-content-click="false"
+            >
+                <template 
+                    v-slot:activator="{ on, attrs }"
+                >
+                    <v-text-field
+                        v-model="form.birth_date"
+                        label="Дата рождения"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                    ></v-text-field>
+                </template>
+                <v-date-picker 
+                    v-model="form.birth_date" 
+                    @input="birthdateMenu = false"
+                ></v-date-picker>
+            </v-menu>
 
             <v-text-field 
                 label="ИИН" 
-                v-model="form.iin"
+                v-model="form.identification_number"
+                type="number"
             ></v-text-field>
 
             <v-text-field 
                 label="Гражданство" 
-                v-model="form.citizenship"
+                v-model="form.citizen"
             ></v-text-field>
 
             <v-text-field 
@@ -110,50 +154,103 @@ export default {
 
             <v-text-field 
                 label="Телефон" 
-                v-model="form.phone"
+                v-model="form.phone_number"
+                type="number"
             ></v-text-field>
 
             <v-text-field 
                 label="Место рождения" 
-                v-model="form.birthPlace"
+                v-model="form.birthplace"
             ></v-text-field>
+
+            <v-select
+                label="Пол"
+                :items="['Мужской', 'Женский']"
+                v-model="form.gender"
+            ></v-select>
 
 
             <h2 class="mb-5">Образование</h2>
             <v-row
-                v-for="(n, index) in education" 
+                v-for="(n, index) in educations" 
                 :key="index"
             >
-                <v-text-field 
-                    class="mx-1" 
-                    label="ВУЗ" 
-                    v-model="form.education[index].university" 
-                    outlined
-                ></v-text-field>
-                <v-text-field 
-                    class="mx-1" 
-                    label="Специальность" 
-                    v-model="form.education[index].major"
-                    outlined
-                ></v-text-field>
-                <v-text-field 
-                    class="mx-1" 
-                    label="Год начала" 
-                    v-model="form.education[index].admissionYear"
-                    outlined
-                ></v-text-field>
-                <v-text-field 
-                    class="mx-1" 
-                    label="Год окончания" 
-                    v-model="form.education[index].graduationYear"
-                    outlined
-                ></v-text-field>
-                <v-text-field 
-                    class="mx-2" 
-                    label="GPI" 
-                    v-model="form.education[index].gpi"
-                    outlined
-                ></v-text-field>
+                <v-col cols="2">
+                    <v-text-field  
+                        label="ВУЗ" 
+                        v-model="form.educations[index].institute" 
+                        outlined
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                    <v-select 
+                        label="Степень"
+                        :items="['Бакалавр', 'Магистратура', 'Докторантура']"
+                        v-model="form.educations[index].education_type"
+                        outlined
+                    ></v-select>
+                </v-col>
+                <v-col cols="2">
+                    <v-text-field 
+                        label="Специальность" 
+                        v-model="form.educations[index].major"
+                        outlined
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                    <v-menu 
+                        v-model="educationStartDateMenu" 
+                        :close-on-content-click="false"
+                    >
+                        <template 
+                            v-slot:activator="{ on, attrs }"
+                        >
+                            <v-text-field
+                                v-model="form.educations[index].date_from"
+                                label="Дата поступления"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                                outlined
+                            ></v-text-field>
+                        </template>
+                        <v-date-picker 
+                            v-model="form.educations[index].date_from" 
+                            @input="birthdateMenu = false"
+                        ></v-date-picker>
+                    </v-menu>
+                </v-col>
+                <v-col cols="2">
+                    <v-menu 
+                        v-model="educationEndDateMenu" 
+                        :close-on-content-click="false"
+                    >
+                        <template 
+                            v-slot:activator="{ on, attrs }"
+                        >
+                            <v-text-field
+                                v-model="form.educations[index].date_to"
+                                label="Дата окончания"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                                outlined
+                            ></v-text-field>
+                        </template>
+                        <v-date-picker 
+                            v-model="form.educations[index].date_to" 
+                            @input="birthdateMenu = false"
+                        ></v-date-picker>
+                    </v-menu>
+                </v-col>
+                <v-col cols="2">
+                    <v-text-field 
+                        label="GPI" 
+                        v-model="form.educations[index].gpi"
+                        type="number"
+                        outlined
+                    ></v-text-field>
+                </v-col>                
             </v-row>
             <v-btn @click="addEducation">
                 <v-icon>mdi-plus</v-icon>
@@ -162,33 +259,67 @@ export default {
 
             <h2 class="my-5">Опыт работы</h2>
             <v-row 
-                v-for="(n, index) in experience" 
+                v-for="(n, index) in worklist" 
                 :key="index"
             >
                 <v-text-field 
                     class="mx-2" 
                     label="Место работы" 
-                    v-model="form.experience[index].workPlace"
+                    v-model="form.worklist[index].work_place"
                     outlined
                 ></v-text-field>
                 <v-text-field 
                     class="mx-2" 
                     label="Должность" 
-                    v-model="form.experience[index].position"
+                    v-model="form.worklist[index].position"
                     outlined
                 ></v-text-field>
-                <v-text-field 
-                    class="mx-2" 
-                    label="Дата начала" 
-                    v-model="form.experience[index].startDate"
-                    outlined
-                ></v-text-field>
-                <v-text-field 
-                    class="mx-2" 
-                    label="Дата окончания" 
-                    v-model="form.experience[index].endDate"
-                    outlined
-                ></v-text-field>
+                
+                <v-menu 
+                    v-model="workStartDateMenu" 
+                    :close-on-content-click="false"
+                >
+                    <template 
+                        v-slot:activator="{ on, attrs }"
+                    >
+                        <v-text-field
+                            class="mx-2"
+                            v-model="form.worklist[index].date_from"
+                            label="Дата начала"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker 
+                        v-model="form.worklist[index].date_from" 
+                        @input="birthdateMenu = false"
+                    ></v-date-picker>
+                </v-menu>
+
+                <v-menu 
+                    v-model="workEndDateMenu" 
+                    :close-on-content-click="false"
+                >
+                    <template 
+                        v-slot:activator="{ on, attrs }"
+                    >
+                        <v-text-field
+                            class="mx-2"
+                            v-model="form.worklist[index].date_to"
+                            label="Дата окончания"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker 
+                        v-model="form.worklist[index].date_to" 
+                        @input="birthdateMenu = false"
+                    ></v-date-picker>
+                </v-menu>
             </v-row>
             <v-btn @click="addExperience">
                 <v-icon>mdi-plus</v-icon>
@@ -215,7 +346,7 @@ export default {
                     ></v-file-input>
                 </v-col>
             </v-row>
-            <v-btn @click="addAchievement   ">
+            <v-btn @click="addAchievement">
                 <v-icon>mdi-plus</v-icon>
             </v-btn>
 
@@ -260,7 +391,7 @@ export default {
                 <v-col cols="4">
                     <v-text-field 
                         label="Уровень" 
-                        v-model="form.languages[index].level"
+                        v-model="form.languages[index].knowledge"
                         outlined
                     ></v-text-field>
                 </v-col>
@@ -278,7 +409,7 @@ export default {
                 <v-col cols="8">
                     <v-text-field 
                         label="Спорт" 
-                        v-model="form.sports[index].sport"
+                        v-model="form.sports[index].sportname"
                         outlined
                     ></v-text-field>
                 </v-col>
@@ -303,24 +434,24 @@ export default {
             <v-row>
                 <v-text-field 
                     label="АДГС 1" 
-                    v-model="form.adgs[0].adgsOne"
+                    v-model="form.adgs_test[0].results"
                     outlined
                 ></v-text-field>
                 <v-file-input 
                     label="Файл"
-                    v-model="form.adgs[0].file" 
+                    v-model="form.adgs_test[0].file" 
                     outlined
                     ></v-file-input>
             </v-row>
             <v-row>
                 <v-text-field 
                     label="АДГС 2" 
-                    v-model="form.adgs[1].adgsTwo"
+                    v-model="form.adgs_test[1].results"
                     outlined
                 ></v-text-field>
                 <v-file-input 
                     label="Файл" 
-                    v-model="form.adgs[1].file" 
+                    v-model="form.adgs_test[1].file" 
                     outlined
                 ></v-file-input>
             </v-row>
