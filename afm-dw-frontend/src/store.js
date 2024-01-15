@@ -10,7 +10,7 @@ import files from './store/files'
 import appeal from './store/appeal'
 import servicerequest from './store/servicerequest'
 import notification from './store/notification'
-
+import registration from './store/registration'
 Vue.use(Vuex)
 
 
@@ -54,9 +54,7 @@ export default new Vuex.Store({
     mutations,
     getters,
     actions,
-    plugins: [
-
-            ],
+    plugins: [],
     modules: {
         chat,
         email,
@@ -67,6 +65,7 @@ export default new Vuex.Store({
         files,
         appeal,
         servicerequest,
-        notification
+        notification,
+        registration,
     }
   })
