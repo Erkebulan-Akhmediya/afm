@@ -80,6 +80,7 @@ export default {
                     }
                 });
                 this.useTests = data;
+                console.log(this.useTests)
                 this.useEndTimeTest = this.$moment(data.startTime).add(data.duration, 'minutes');
             } catch (e) {
                 if (e.data && e.data.ERR_MSG) {
@@ -99,12 +100,12 @@ export default {
                     })
                     return acc;
                 }, [])
-
+                console.log(testSessionAnswer)
                 const {data} = await this.axios.put(`/api/1.0/test/${this.useSessionStorageTestData.testId}/employee/${sessionStorage.getItem('userId')}/testSession/${this.useSessionStorageTestData.testSessionId}`, {
                     statusId: 2,
                     testSessionAnswer
                 });
-
+                console.log("vse")
                 this.useTotalResultTest = data;
                 this.useDialog = true;
 
@@ -255,6 +256,7 @@ export default {
                     </v-navigation-drawer>
                 </div>
                 <v-col>
+                   
                     <div class="scrollWrapper" :style="{height: `${useHeightBoxQuestion}px`, overflowY: `auto`}" id="boxquestion">
                         <v-sheet  
                             v-for="(question,i) in useTests.testSessionAnswer"
