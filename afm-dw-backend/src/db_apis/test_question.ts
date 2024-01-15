@@ -95,6 +95,8 @@ export async function test_question_get_db(bind: any, client: Client) {
                     ${sql_from_clause}
                     ${sql_where_clause}`
         }
+        
+        
         let {rows: questions}: any = await client.query(query, queryBind)
         return questions;
     } catch (err) {
@@ -139,6 +141,7 @@ export async function test_answer_get_db(bind: any, client: Client) {
                     hr.test_answer q
                     ${sql_where_clause}`
         }
+        
         let {rows: answers}: any = await client.query(query, queryBind)
         return answers;
     } catch (err) {
@@ -468,6 +471,8 @@ async function test_department_post_db(client: Client | null, bind: any) {
 
 async function createTestSessionDB(client: Client, bind: any) {
     try {
+
+        console.log(bind)
         let {rows: {[0]: data}} = await client.query({
             text: `
                 insert into hr.test_session 
@@ -479,11 +484,13 @@ async function createTestSessionDB(client: Client, bind: any) {
                 bind.testId, 
                 bind.testQuestionQTY,
                 bind.create_user, 
-                bind.update_user
+                bind.update_user,
             ]
+            
         }).catch((e: any) => { 
             throw `Ошибка hr.test_session post db => ${e} ${JSON.stringify(bind)}`
         });
+
 
         return data;
     } catch (err) {
@@ -576,7 +583,7 @@ async function putTestSessionAnswerDB(client: Client, bind: any) {
     try {
         let queryBind = [];
         let query = `update hr.test_session_answer set`;
-
+        console.log(query)
         if (bind.userAnswerId) {
             query += `${queryBind.length ? `,` : ``} user_answer_id = $${queryBind.push(bind.userAnswerId)}`;
         }
@@ -649,6 +656,31 @@ async function createTestQuestionRelDB(client: Client, bind: any) {
         throw err;
     }
 }
+
+export async function test_competency_postDB(client: Client, bind: any) {
+    try {           
+        await client.query({
+            text: `
+                insert into hr.test_competency_result
+                    (employee_id, test_id, grade, report_text)
+                values
+                    ($1, $2, $3, $4) `,
+            values: [
+                bind.employee_id,
+                bind.test_id,
+                bind.grade,
+                bind.report,
+            ]
+        }).catch((e: any) => { 
+            throw `Ошибка hr.test_competency_postDB post db => ${e} ${JSON.stringify(bind)}`
+        });
+
+    } catch (err) {
+        log.error(err)
+        throw err;
+    }
+}
+
 
 async function testQuestionPutDB(client: Client, bind: any) {
     try {                    
@@ -728,6 +760,7 @@ async function getTestListDB(client: Client, bind: any) {
         ${bind.testId ? `and t.id = ${bind.testId}` : ``}
         ${bind.ispageemployeepassingtest ? `order by ts.id desc` : ``}
         `
+        console.log('answers',query)
         let {rows: data}: any = await client.query(query);
         return data;
     } catch (err) {

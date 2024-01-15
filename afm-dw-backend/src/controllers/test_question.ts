@@ -23,7 +23,8 @@ import {
     getTestListDB,
     test_department_get_db,
     test_department_post_db,
-    test_department_delete_db
+    test_department_delete_db,
+    test_competency_postDB
 } from '../db_apis/test_question';
 import createBind from '../utils/create-bind';
 import get_client from '../loaders/database';
@@ -392,7 +393,8 @@ async function createTestSession(req: express.Request, res: express.Response, ne
             employeeId: parseInt(bind.employeeid, 10),
             testId: parseInt(bind.testid, 10),
             testQuestionQTY: questionIds.length,
-            create_user: bind.user_name
+            create_user: bind.user_name,
+            update_user: bind.user_name
         });
 
         for (let i = 0; i < questionIds.length; i++) {
@@ -401,11 +403,11 @@ async function createTestSession(req: express.Request, res: express.Response, ne
                 testquestionid: questionIds[i],
                 lang: bind.lang
             },client)).find((item: any) => item.is_correct);
-
+// session
             await createTestSessionAnswerDB(client, {
                 testSessionId: testSessionId.id,
                 questionId: questionIds[i],
-                correctAnswerId: correctAnswerId?.id || null
+                correctAnswerId: correctAnswerId?.id || null,
             });
         }
 
@@ -439,26 +441,31 @@ async function putTestSession(req: express.Request, res: express.Response, next:
 
         await client.query('BEGIN');
         const bind: any = createBind(req); 
-
+        console.log("works")
         const allTestSessionAnswer = await getTestSessionAnswerDB(client, {
             lang: bind.lang,
             testSessionId: parseInt(bind.testsessionid, 10)
         });
-
+        console.log(bind.testsessionid)
 
         let currentAnswerUserCount = 0;
+        console.log('hkjh', bind.testsessionanswer)
         for (let i = 0; i < bind.testsessionanswer.length; i++) {
+            console.log("works2")
 
             const testSessionAnswer = allTestSessionAnswer.find((item: any) => item.question_id === bind.testsessionanswer[i].questionId && item.test_session_id === parseInt(bind.testsessionid, 10));
-
-            if (testSessionAnswer.correct_answer_id === bind.testsessionanswer[i].userAnswerId) {
+            console.log("vse")
+            console.log( bind.testsessionanswer[i].userAnswerId)
+            if (testSessionAnswer.correct_answer_id === bind.testsessionanswer[i].userAnswerId) 
+            {
                 currentAnswerUserCount += 1;
             }
-
             await putTestSessionAnswerDB(client, {
                 userAnswerId: bind.testsessionanswer[i].userAnswerId,
                 id: testSessionAnswer.id
+
             })
+            
         }
 
 
@@ -601,7 +608,7 @@ async function getTestList (req: express.Request, res: express.Response, next: e
             testId: bind.testid,
             ispageemployeepassingtest: bind.ispageemployeepassingtest,
         })
-
+        console.log(bind.ispaigtestinprogress)
         if (result.length && bind.ispaigtestinprogress && Boolean(JSON.parse(bind.ispaigtestinprogress))) {
 
             const checkPassedTest = await getTestSessionDB(client, {
@@ -661,6 +668,29 @@ async function getTestList (req: express.Request, res: express.Response, next: e
     }
 }
 
+
+export async function test_competency_post (req: express.Request, res: express.Response, next: express.NextFunction) {
+    let client: Client | null = null;
+    try {
+        client = get_client(); await client.connect();
+        const bind: any = createBind(req);
+        await test_competency_postDB(client, bind);
+
+        res.locals.data = {
+            statusCode: 200,
+        }
+        next();
+    } catch (error) {
+        if(client) {
+            await client.query('ROLLBACK')
+        }
+        next(error)
+    } finally {
+        if (client) {
+            await client.end()
+        }
+    }
+}
 export {
     createTestSession,
     putTestSession,

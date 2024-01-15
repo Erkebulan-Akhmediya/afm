@@ -29,7 +29,7 @@ import {
 import {media_get} from '../controllers/media';
 import {doc_get, doc_getJbk, doc_getPen, doc_getExp, doc_getHoliday, get_holidays, pdf_workplace} from '../controllers/doc';
 import {know_base_get, know_base_post, know_base_delete, know_base_put} from '../controllers/know_base';
-import {test_get, test_question_get, test_answer_get, test_post, createTestQuestion, test_answer_post, test_put, putTestQuestion, test_answer_put, createTestSession, putTestSession, getTestList, test_question_rel_post, test_question_rel_put, getTestSession, getTestSessionAnswer} from '../controllers/test_question';
+import {test_get, test_question_get, test_answer_get, test_post, createTestQuestion, test_answer_post, test_put, putTestQuestion, test_answer_put, createTestSession, putTestSession, getTestList, test_question_rel_post, test_question_rel_put, getTestSession, getTestSessionAnswer, test_competency_post} from '../controllers/test_question';
 import {get_reference, get_reference_pdf} from '../controllers/reference';
 import {call_history} from '../middleware/call_history';
 import {getRatingTest, getKnowLevel, getRatingActive} from '../controllers/rating';
@@ -193,6 +193,7 @@ export const routes = (app: express.Application) => {
     router.put('/test_answer', test_answer_put); 
 
 
+    router.post('/test_competency', test_competency_post );
     router.post('/test/:testId/employee/:employeeId', unCript, createTestSession); 
     router.put('/test/:testId/employee/:employeeId/testSession/:testSessionId', unCript, putTestSession); 
     router.post('/testQuestion', createTestQuestion); 
@@ -200,6 +201,7 @@ export const routes = (app: express.Application) => {
     router.get('/test-lists', getTestList) 
     router.get('/test-session', getTestSession) 
     router.get('/test-session-answer', getTestSessionAnswer) 
+
 
     router.get('/test-rating', getRatingTest) 
     router.get('/know-level', getKnowLevel) 
@@ -405,7 +407,7 @@ export const routes = (app: express.Application) => {
 
     router.get('/get-holidays', unCript, get_holidays) 
 
-        app.use(auth);
+        // app.use(auth);
 
     app.use(api, router);
 
