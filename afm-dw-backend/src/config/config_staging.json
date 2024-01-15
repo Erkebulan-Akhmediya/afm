@@ -50,9 +50,9 @@
     },
 
     "db": {
-        "ip": "pgbouncer",
-        "user": "afm",
-        "password": "afm007",
+        "ip": "localhost",
+        "user": "root",
+        "password": "1907",
         "dbname": "afm"
     },
 

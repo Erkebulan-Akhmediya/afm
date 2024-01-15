@@ -5,7 +5,7 @@
         class="header justify-space-between align-center mb-4"
         style="display: flex;"
       >
-        <h2>{{$t('knowBaseGrade.knowBaseGrade')}}</h2>
+        <h2>{{$t('yesshir')}}</h2>
         <v-btn
           style="width: 200px; margin-left: auto;"
           outlined

@@ -350,6 +350,7 @@ export async function test_answer_put_db(bind: any, client: Client) {
 }
 
 async function getTestSessionDB(client: Client, bind: any) {
+    console.log(bind)
     try {
         let sql_where_clause = ''
         let queryBind = []
@@ -379,6 +380,8 @@ async function getTestSessionDB(client: Client, bind: any) {
             hr.employee e
         ${sql_where_clause}
         order by ts.id desc`
+        console.log(query)
+        console.log(queryBind)
         let {rows: data}: any = await client.query(query, queryBind)
         return data;
     } catch (err) {
@@ -522,6 +525,7 @@ async function putTestSessionDB(client: Client, bind: any) {
 }
 
 async function getTestSessionAnswerDB(client: Client, bind: any) {
+    console.log(bind)
     try {
         let sql_where_clause = ''
         let queryBind = []
@@ -539,8 +543,11 @@ async function getTestSessionAnswerDB(client: Client, bind: any) {
         left join hr.test_answer a on tsa.user_answer_id = a.id
         join hr.test_answer ac on tsa.correct_answer_id = ac.id
         ${sql_where_clause}`
-
+        console.log('finish1')
+        console.log(query)
+        console.log(queryBind)
         let {rows: data}: any = await client.query(query, queryBind)
+        
         return data;
     } catch (err) {
         log.error(err)
@@ -573,6 +580,7 @@ async function createTestSessionAnswerDB(client: Client, bind: any) {
 }
 
 async function putTestSessionAnswerDB(client: Client, bind: any) {
+    console.log('finish3')
     try {
         let queryBind = [];
         let query = `update hr.test_session_answer set`;

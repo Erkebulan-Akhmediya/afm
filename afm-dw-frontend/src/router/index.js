@@ -29,6 +29,11 @@ const routes = [
         component: () => import('@/views/Employees.vue')
       },
       {
+        path: 'testCheck',
+        name: 'testCheck',
+        component: () => import('@/views/CheckTest.vue')
+      },
+      {
         path: 'live',
         name: 'LiveNews',
         props: true,

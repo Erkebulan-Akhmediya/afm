@@ -377,7 +377,7 @@ async function createTestSession(req: express.Request, res: express.Response, ne
 
                 await client.query('BEGIN');
         const bind: any = createBind(req); 
-
+        console.log('test_question_get_db', bind)
         const questionIds = (await test_question_get_db({
             lang: bind.lang,
             test_id: parseInt(bind.testid, 10)
@@ -385,14 +385,15 @@ async function createTestSession(req: express.Request, res: express.Response, ne
             acc.push(item.id)
             return acc
         }, [])
-
+        console.log(bind)
 
         const testSessionId = await createTestSessionDB(client, {
             lang: bind.lang,
             employeeId: parseInt(bind.employeeid, 10),
             testId: parseInt(bind.testid, 10),
             testQuestionQTY: questionIds.length,
-            create_user: bind.user_name
+            create_user: bind.user_name,
+            update_user: bind.user_name,
         });
 
         for (let i = 0; i < questionIds.length; i++) {
@@ -433,34 +434,35 @@ async function createTestSession(req: express.Request, res: express.Response, ne
 }
 
 async function putTestSession(req: express.Request, res: express.Response, next: express.NextFunction) {
+    
     let client: Client | null = null;
     try {
         client = get_client(); await client.connect();
 
         await client.query('BEGIN');
         const bind: any = createBind(req); 
-
         const allTestSessionAnswer = await getTestSessionAnswerDB(client, {
             lang: bind.lang,
             testSessionId: parseInt(bind.testsessionid, 10)
         });
-
+        console.log('answers from db', allTestSessionAnswer)
+        console.log('finish2')
 
         let currentAnswerUserCount = 0;
         for (let i = 0; i < bind.testsessionanswer.length; i++) {
 
             const testSessionAnswer = allTestSessionAnswer.find((item: any) => item.question_id === bind.testsessionanswer[i].questionId && item.test_session_id === parseInt(bind.testsessionid, 10));
-
+            console.log('my answers', testSessionAnswer)
             if (testSessionAnswer.correct_answer_id === bind.testsessionanswer[i].userAnswerId) {
                 currentAnswerUserCount += 1;
             }
-
+            console.log('answer',bind.testsessionanswer[i].userAnswerId)
             await putTestSessionAnswerDB(client, {
                 userAnswerId: bind.testsessionanswer[i].userAnswerId,
                 id: testSessionAnswer.id
             })
         }
-
+        console.log('finish3')
 
         await putTestSessionDB(client, {
             updateUser: bind.user_name,
@@ -469,7 +471,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
             endTime: true,
             id: parseInt(bind.testsessionid, 10),
         })
-
+        console.log('finish4')
                 await client.query('COMMIT');
 
         const testSession = await getTestSessionDB(client, {
@@ -477,6 +479,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
             lang: bind.lang,
             testId: parseInt(bind.testid, 10)
         });
+        console.log('finish5')
 
         res.locals.data = {
             statusCode: 200,

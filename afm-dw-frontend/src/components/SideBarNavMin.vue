@@ -96,7 +96,7 @@
 <script>
   import moment from 'moment'
   import Cookies from 'js-cookie'
-  import checkRoles from '@/utils/check_role'
+
   import { mapGetters } from "vuex";
 
   export default {
@@ -194,50 +194,17 @@
 
                 this.items.push(
           { title: this.$t('mainPage.mainMenu.home'), icon: 'mdi-view-dashboard-outline', href: '/'},
-          { title: this.$t('mainPage.mainMenu.kpi'), icon: 'mdi-chart-line', href: '/kpi'},
-          { title: this.$t('mainPage.mainMenu.employees'), icon: 'mdi-account-multiple-outline', href: '/employees'},
-          { title: this.$t('mainPage.mainMenu.live'), icon: 'mdi-view-agenda-outline', href: '/live' },
           { title: this.$t('mainPage.mainMenu.tests'), icon: 'mdi-clipboard-outline', href: '/tests' },
-          { title: this.$t('mainPage.mainMenu.calendar'), icon: 'mdi-calendar-month-outline', href: '/calendar' },
-          { title: this.$t('mainPage.mainMenu.application'), icon: 'mdi-apps', href: '/applications' },
-          { title: this.$t('mainPage.mainMenu.knowBase'), icon: 'mdi-view-column-outline', href: '/knowbase' },
-          { title: this.$t('mainPage.mainMenu.approval'), icon: 'mdi-checkbox-marked-outline', href: '/requests', badge : true },
-          { title: 'Мессенджер', icon: 'mdi-message-text-outline', href: '/messenger', badge : true},
-          { title: 'Предложения', icon: 'mdi-lightbulb', href: '/appeals' },
-          { title: 'Заявления', icon: 'mdi-clipboard-text-multiple-outline', href: '/all_requests' }
+          { title: 'Заявления', icon: 'mdi-clipboard-text-multiple-outline', href: '/all_requests' },
+          { title: 'Проверка теста', icon: 'mdi-plus', href: '/testCheck'}
         )
 
-        if(checkRoles('44', this.$userData))
-        {
-          this.items.push(
-            { title: "Отчеты", icon: 'mdi-file-chart-outline', href: '/report_instance' }
-          )
-        }
 
-        if(checkRoles('17', this.$userData) || checkRoles('18', this.$userData) || checkRoles('16', this.$userData))
-        {
-          this.items.push(
-            { title: "Бюро пропусков", icon: 'mdi-account-check', href: '/pass_requests' } 
-          )
-        }
+
 
         if (this.configCode == 'afm') {
           this.items.push(
             { title: this.$t('mainPage.mainMenu.knowBaseGrade'), icon: 'mdi-view-column-outline', href: '/knowbasegrade' },
-          )
-        }
-
-        if(checkRoles('31', this.$userData))
-        {
-          this.items.push(
-            { title: 'Email', icon: 'mdi-email-outline', href: '/email' }
-          )
-        }
-
-        if(checkRoles('34', this.$userData) || checkRoles('50', this.$userData) || checkRoles('51', this.$userData))
-        {
-          this.items.push(
-            { title: 'Служба поддержки', icon: 'mdi-headset', href: '/servicerequests' }
           )
         }
       }

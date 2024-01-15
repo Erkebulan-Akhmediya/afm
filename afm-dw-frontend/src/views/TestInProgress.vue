@@ -104,7 +104,7 @@ export default {
                     statusId: 2,
                     testSessionAnswer
                 });
-
+                
                 this.useTotalResultTest = data;
                 this.useDialog = true;
 
@@ -286,7 +286,7 @@ export default {
                         color="primary"
                         @click="endTest"
                         >
-                        ЗАВЕРШИТЬ
+                        ЗАВЕР
                         </v-btn>
                     </div>
                 </v-col>
