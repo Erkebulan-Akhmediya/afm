@@ -1,11 +1,10 @@
 <script>
 import { mapGetters } from 'vuex'
+import sendFile from '../../utils/send_file.js'
 
 export default {
     computed: {
-        ...mapGetters([
-            'form'
-        ]),
+        ...mapGetters(['form']),
     },
     data() {
         return {
@@ -32,6 +31,19 @@ export default {
             this.sports++;
             this.form.sports.push({});
         },
+        async sendFile(event, str) {
+            const res = await sendFile(event);
+
+            if (str === 'achievements') {
+                this.form.achievements[index].file_id = res.data.file_id;
+                return;
+            }
+
+            if (str === 'certeficates') {
+                this.form.certeficates[index].file_id = res.data.file_id;
+                return;
+            }
+        }
     },
 };
 </script>
@@ -48,13 +60,18 @@ export default {
                 <v-text-field 
                     label="Грамота" 
                     v-model="form.achievements[index].diploma"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-text-field>
             </v-col>
             <v-col cols="4">
                 <v-file-input 
+                    @change="sendFile($event, 'achievements')"
                     label="Файл" 
                     v-model="form.achievements[index].file"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-file-input>
             </v-col>
@@ -72,13 +89,18 @@ export default {
                 <v-text-field 
                     label="Сертефикат" 
                     v-model="form.certeficates[index].certeficate"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-text-field>
             </v-col>
             <v-col cols="4">
                 <v-file-input 
+                    @change="sendFile($event, 'certeficates')"
                     label="Файл" 
                     v-model="form.certeficates[index].file"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-file-input>
             </v-col>
@@ -96,6 +118,8 @@ export default {
                 <v-text-field 
                     label="Иностранный язык" 
                     v-model="form.languages[index].language"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-text-field>
             </v-col>
@@ -103,6 +127,8 @@ export default {
                 <v-text-field 
                     label="Уровень" 
                     v-model="form.languages[index].knowledge"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-text-field>
             </v-col>
@@ -120,6 +146,8 @@ export default {
                 <v-text-field 
                     label="Спорт" 
                     v-model="form.sports[index].sportname"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-text-field>
             </v-col>
@@ -127,6 +155,8 @@ export default {
                 <v-text-field 
                     label="Разряд" 
                     v-model="form.sports[index].level"
+                    :rules="[v => !!v || 'Обязательное поле']"
+                    required
                     outlined
                 ></v-text-field>
             </v-col>

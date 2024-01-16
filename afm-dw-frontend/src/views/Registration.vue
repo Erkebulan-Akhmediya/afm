@@ -2,11 +2,11 @@
 import axios from 'axios';
 import { mapGetters } from 'vuex';
 import FormTitle from '../components/registration/FormTitle.vue';
-import GeneralInfo from '@/components/registration/GeneralInfo.vue'
-import Education from '@/components/registration/Education.vue'
-import WorkExperience from '@/components/registration/WorkExperience.vue'
-import AchievementsAndQualifications from '@/components/registration/AchievementsAndQualifications.vue'
-import Additionals from '@/components/registration/Additionals.vue'
+import GeneralInfo from '../components/registration/GeneralInfo.vue'
+import Education from '../components/registration/Education.vue'
+import WorkExperience from '../components/registration/WorkExperience.vue'
+import AchievementsAndQualifications from '../components/registration/AchievementsAndQualifications.vue'
+import Additionals from '../components/registration/Additionals.vue'
 
 export default {
     components: {
@@ -52,9 +52,6 @@ export default {
         },
         prev() {
             this.step--;
-        },
-        nigger() {
-            console.log(this.form);
         },
     },
 };
@@ -112,7 +109,13 @@ export default {
                         v-if="step > 1" 
                         @click="prev"
                     >
-                        Пред
+                        Назад
+                    </v-btn>
+                    <v-btn 
+                        v-else 
+                        @click="$router.push('/login')"
+                    >
+                        Вход
                     </v-btn>
 
                     <v-btn 
@@ -120,11 +123,11 @@ export default {
                         @click="next" 
                         color="primary"
                     >
-                        След
+                        Вперед
                     </v-btn>
-
                     <v-btn 
                         v-else 
+                        @click="submitForm"
                         color="primary"
                     >
                         Зарегистрироваться
@@ -133,7 +136,7 @@ export default {
 
             </v-stepper>
         </v-col>
-        <!-- <v-btn @click="nigger">nigger</v-btn> -->
+
     </div>
 </template>
 
