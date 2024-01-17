@@ -18,9 +18,7 @@ export default {
             isBluredData: 0,
             timeToBlured: 1000,
             accessTime: 0,
-            isEndTest: false,
-            essay: '',
-            testType: -1,
+            isEndTest: false
         }
     },
     async created() {
@@ -78,15 +76,10 @@ export default {
                     params: {
                         employeeId: sessionStorage.getItem('userId'),
                         testId: bind.testId,
-                        isPaigTestInProgress: true,
-
+                        isPaigTestInProgress: true
                     }
                 });
                 this.useTests = data;
-                this.testType = this.useTests.testSessionAnswer[0].questionTypeId;
-                console.log('test type',this.testType)
-                console.log(this.useTests)
-                console.log('please watch test content',this.useTests)
                 this.useEndTimeTest = this.$moment(data.startTime).add(data.duration, 'minutes');
             } catch (e) {
                 if (e.data && e.data.ERR_MSG) {
@@ -97,20 +90,15 @@ export default {
             }
         },
         async endTest() {
-            // 
             try {
                 this.isEndTest = true
-                //  user answers
                 const testSessionAnswer = this.useTests.testSessionAnswer.reduce((acc, item) => {
                     acc.push({
                         questionId: item.questionId,
-                        userAnswerId: item.userAnswerId,
-                        isEssay: this.testType == 2 ?  true : false,
-                        essay: this.testType == 2 ? this.essay : '',
+                        userAnswerId: item.userAnswerId
                     })
                     return acc;
                 }, [])
-                console.log(testSessionAnswer)
 
                 const {data} = await this.axios.put(`/api/1.0/test/${this.useSessionStorageTestData.testId}/employee/${sessionStorage.getItem('userId')}/testSession/${this.useSessionStorageTestData.testSessionId}`, {
                     statusId: 2,
@@ -277,7 +265,7 @@ export default {
                             <div>
                                 {{i+1}}. {{question.questionName}}
                             </div>
-                            <div v-if="question.questionTypeId == 1" style="padding: 2rem 0 0 2rem">
+                            <div style="padding: 2rem 0 0 2rem">
                                 <label class="container-radio" v-for="(answer,j) in question.answers" :key="j">
                                     {{answer.name}}
                                     <input type="radio" :class="`questionAnswerClassInput${i+1}`" :id="`questionID${i+1}AnswerId${j+1}`" :name="`questionAnswerNameInput${i+1}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
@@ -285,9 +273,6 @@ export default {
                                         <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i+1}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
                                     </span>
                                 </label>
-                            </div>
-                            <div v-if="question.questionTypeId == 2" style="padding: 2rem 0 0 2 rem">
-                                <v-textarea v-model="essay" height="500" class="mt-10" label="Эссе" outlined></v-textarea>
                             </div>
                         </v-sheet>
                     </div>
@@ -414,4 +399,4 @@ export default {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-radius: 10px;
 }
-</style>
+</style>ы

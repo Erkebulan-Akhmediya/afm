@@ -8,7 +8,7 @@
     },
 
     "file": {
-        "endPoint": "192.168.122.118",
+        "endPoint": "localhost",
         "port": 9000,
         "useSSL": false,
         "accessKey": "minio",

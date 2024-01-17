@@ -196,7 +196,10 @@
           { title: this.$t('mainPage.mainMenu.home'), icon: 'mdi-view-dashboard-outline', href: '/'},
           { title: this.$t('mainPage.mainMenu.tests'), icon: 'mdi-clipboard-outline', href: '/tests' },
           { title: 'Заявления', icon: 'mdi-clipboard-text-multiple-outline', href: '/all_requests' },
-          { title: 'Проверка теста', icon: 'mdi-plus', href: '/testCheck'}
+          { title: 'Проверка теста', icon: 'mdi-plus', href: '/test_check'},
+          { title: 'IQ тест', icon: 'mdi-plus', href: '/iq_test'},
+          { title: 'Тест по компетенций', icon: 'mdi-plus', href: '/comp_test'},
+          { title: 'Эссе тест', icon: 'mdi-plus', href: '/essay_test'},
         )
 
 

@@ -95,8 +95,8 @@ export async function file_post(req: any, res: express.Response, next: express.N
             req.file = null
         }
 
-                let data: any
-        if(req.file) {
+            let data: any
+            if(req.file) {
             data = await file_post_db(req, client)
             await post_file(req, data.id, res)
         }

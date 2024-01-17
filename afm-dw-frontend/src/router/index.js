@@ -29,8 +29,23 @@ const routes = [
         component: () => import('@/views/Employees.vue')
       },
       {
-        path: 'testCheck',
-        name: 'testCheck',
+        path: 'comp_test',
+        name: 'comp_test',
+        component: () => import('@/views/CompTest.vue')
+      },
+      {
+        path: 'iq_test',
+        name: 'iq_test',
+        component: () => import('@/views/IqTest.vue')
+      },
+      {
+        path: 'essay_test',
+        name: 'essay_test',
+        component: () => import('@/views/EssayTest.vue')
+      },
+      {
+        path: 'test_check',
+        name: 'test_check',
         component: () => import('@/views/CheckTest.vue')
       },
       {

@@ -1,5 +1,6 @@
 import { Client } from 'pg';
 import log from '../config/logger';
+import { SequentialIdentifier } from 'docx';
 
 export async function test_get_db(bind: any, client: Client) {
     try {
@@ -95,6 +96,9 @@ export async function test_question_get_db(bind: any, client: Client) {
                     ${sql_from_clause}
                     ${sql_where_clause}`
         }
+        console.log('second2')
+        console.log(query)
+        console.log(queryBind)
         let {rows: questions}: any = await client.query(query, queryBind)
         return questions;
     } catch (err) {
@@ -139,6 +143,7 @@ export async function test_answer_get_db(bind: any, client: Client) {
                     hr.test_answer q
                     ${sql_where_clause}`
         }
+        console.log('third3', query, queryBind)
         let {rows: answers}: any = await client.query(query, queryBind)
         return answers;
     } catch (err) {
@@ -195,14 +200,15 @@ export async function test_question_rel_post_db(bind: any, client: Client) {
 }
 
 export async function test_answer_post_db(bind: any, client: Client) {
-    try {        
+    try {      
+        console.log('works')  
         const activeTest = await checkActiveTest(client, {question_id: bind.test_question_id})
-        if(activeTest.length) {
-            let tests = activeTest.map((item: any) => {
-                return item.id
-            })
-            throw `Вопрос №${bind.test_question_id} используется в активных тестах: ${tests.join(', ')}`
-        }
+        // if(activeTest.length && bind.isEssay != 1) {
+        //     let tests = activeTest.map((item: any) => {
+        //         return item.id
+        //     })
+        //     throw `Вопрос №${bind.test_question_id} используется в активных тестах: ${tests.join(', ')}`
+        // }
         const queryBind = [
             bind.name_rus,
             bind.name_kaz,
@@ -380,6 +386,7 @@ async function getTestSessionDB(client: Client, bind: any) {
             hr.employee e
         ${sql_where_clause}
         order by ts.id desc`
+        console.log('first1')
         console.log(query)
         console.log(queryBind)
         let {rows: data}: any = await client.query(query, queryBind)
@@ -516,8 +523,10 @@ async function putTestSessionDB(client: Client, bind: any) {
         if (bind.id) {
             query += ` where id = $${queryBind.push(bind.id)}`;
         }
-
+        console.log(query)
+        console.log(queryBind)
         await client.query(query, queryBind) 
+
     } catch (err) {
         log.error(err)
         throw err;
@@ -554,6 +563,28 @@ async function getTestSessionAnswerDB(client: Client, bind: any) {
         throw err;
     }
 }
+async function getTestTypeDB(client: Client, bind: any) {
+    console.log(bind)
+    try {
+        let sql_where_clause = ''
+        let queryBind = []
+        if(bind.testSessionId) {
+            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} tsa.test_session_id = $${queryBind.push(bind.testSessionId)}`
+        }
+        let query = `
+        selec
+        ${sql_where_clause}`
+        console.log('finish1')
+        console.log(query)
+        console.log(queryBind)
+        let {rows: data}: any = await client.query(query, queryBind)
+        
+        return data;
+    } catch (err) {
+        log.error(err)
+        throw err;
+    }
+}
 
 async function createTestSessionAnswerDB(client: Client, bind: any) {
     try {
@@ -578,6 +609,30 @@ async function createTestSessionAnswerDB(client: Client, bind: any) {
         throw err;
     }
 }
+async function createTestSessionEssayDB(client: Client, bind: any) {
+    try {
+        console.log('essay post works')
+        let {rows: {[0]: data}} = await client.query({
+            text: `
+                insert into hr.test_session_essay
+                    (test_session_id, question_id, essay)
+                values 
+                    ($1, $2, $3) returning id`,
+            values: [
+                bind.testSessionId, 
+                bind.questionId, 
+                bind.essay,
+            ]
+        }).catch((e: any) => { 
+            throw `Ошибка hr.test_session_essay post db => ${e} ${JSON.stringify(bind)}`
+        });
+
+        return data;
+    } catch (err) {
+        log.error(err)
+        throw err;
+    }
+}
 
 async function putTestSessionAnswerDB(client: Client, bind: any) {
     console.log('finish3')
@@ -588,15 +643,38 @@ async function putTestSessionAnswerDB(client: Client, bind: any) {
         if (bind.userAnswerId) {
             query += `${queryBind.length ? `,` : ``} user_answer_id = $${queryBind.push(bind.userAnswerId)}`;
         }
+        if (bind.isEssay){
+            query += ``
+        }
 
 
         if (queryBind.length) {
             if (bind.id) {
                 query += ` where id = $${queryBind.push(bind.id)}`;
             }
-
+            console.log(query)
+            console.log(queryBind)
             await client.query(query, queryBind) 
         }
+    } catch (err) {
+        log.error(err)
+        throw err;
+    }
+}
+async function putTestSessionEssayDB(client: Client, bind: any) {
+    console.log('put essay on table')
+    try {
+        let queryBind = [];
+        let query = `update hr.test_session_essay set`;
+
+        if (bind.essay) {
+            query += `${queryBind.length ? `,` : ``} essay = $${queryBind.push(bind.essay)}`;
+        }
+        if (bind.id) {
+            query += ` where test_session_id = $${queryBind.push(bind.testsessionid)}`;
+        }
+
+        await client.query(query, queryBind) 
     } catch (err) {
         log.error(err)
         throw err;
@@ -736,6 +814,7 @@ async function getTestListDB(client: Client, bind: any) {
         ${bind.testId ? `and t.id = ${bind.testId}` : ``}
         ${bind.ispageemployeepassingtest ? `order by ts.id desc` : ``}
         `
+        console.log('needed query', query)
         let {rows: data}: any = await client.query(query);
         return data;
     } catch (err) {
@@ -774,5 +853,7 @@ export {
     getTestListDB,
     test_department_get_db,
     test_department_post_db,
-    test_department_delete_db
+    test_department_delete_db,
+    createTestSessionEssayDB,
+    putTestSessionEssayDB
 }

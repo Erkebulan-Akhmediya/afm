@@ -45,7 +45,7 @@ export default {
                 const localParams = {
                     user_id: sessionStorage.getItem('userId')
                 }
-                const {data} = await this.axios.post(`/api/1.0/test/${bind.testId}/employee/:user_id`, {}, {localParams});
+                const {data} = await this.axios.post(`/api/1.0/test/${bind.testId}/employee/:user_id`, {}, {localParams}); // createTestSession
                 sessionStorage.setItem('testData', JSON.stringify({
                     testId: bind.testId,
                     testSessionId: data.testSessionId.id
