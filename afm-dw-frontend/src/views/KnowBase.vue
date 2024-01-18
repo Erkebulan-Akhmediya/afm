@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <div class="knowBase">
       <div
@@ -218,4 +218,93 @@ export default {
     this.getKnowBase();
   },
 };
+</script> -->
+
+
+<template>
+  <div>
+    <div class="knowBase">
+      
+      <!-- Оглавление эссе -->
+      <h3>Оглавление эссе</h3>
+      <!-- Тема эссе -->
+      <div>
+        <h3>Тема эссе:</h3>
+        <p>{{ essayTopic }}</p>
+      </div>
+      <!-- Форма для написания эссе -->
+      <div>
+  <h3>Форма для написания эссе</h3>
+  <form @submit.prevent="submitEssayForm" class="essay-form">
+    <textarea v-model="essayText" rows="8" cols="80" placeholder="Введите текст эссе"></textarea>
+  </form>
+  <button type="submit" class="button">Отправить</button>
+
+</div>
+
+      <!-- Ваш текущий компонент KnowBaseExpander -->
+      <KnowBaseExpander @refreshExpanders="getKnowBase" :know_data="know_data" :level="0"> </KnowBaseExpander>
+    </div>
+    <!-- Ваш текущий диалог для добавления раздела -->
+    <v-dialog v-model="addSectionPopup" width="700">
+      <!-- ... (ваш текущий код) ... -->
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      essayTopic: 'Влияние технологий на современное общество',
+      essayText: '',
+      // ... (ваш текущий код)
+    };
+  },
+  methods: {
+    // ... (ваш текущий код)
+    submitEssayForm() {
+      // Обработка отправки эссе
+      console.log('Отправка эссе:', this.essayText);
+    }
+  }
+};
 </script>
+
+<style lang="scss" scoped>
+.knowBase {
+  min-height: 100vh;
+  background-color: #fff;
+  padding: 20px;
+
+  h2 {
+    font-size: 30px;
+  }
+
+  h3 {
+    margin-top: 20px;
+    font-size: 24px;
+  }
+  .essay-form {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+
+  textarea {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button {
+    padding: 10px;
+    background-color: #5787a4;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+}
+}
+
+</style>

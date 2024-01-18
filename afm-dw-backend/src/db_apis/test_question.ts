@@ -786,6 +786,21 @@ async function checkActiveTest(client : any, bind : any) {
     }
 }
 
+async function Test_q(client : any, bind : any) {
+    try {
+        let query = `select *
+        from hr.test_question
+        where test_question_type_id = $1`;
+
+        let { rows: data } = await client.query(query, [2]);
+        return data;
+        console.log(query)
+    } catch (err) {
+        log.error(err);
+        throw err;
+    }
+}
+
 export {
     createTestSessionDB,
     putTestSessionDB,

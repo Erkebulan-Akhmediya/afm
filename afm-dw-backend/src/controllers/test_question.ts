@@ -378,7 +378,7 @@ async function createTestSession(req: express.Request, res: express.Response, ne
 
                 await client.query('BEGIN');
         const bind: any = createBind(req); 
-
+        console.log('contronller bind', bind)
         const questionIds = (await test_question_get_db({
             lang: bind.lang,
             test_id: parseInt(bind.testid, 10)
@@ -386,6 +386,7 @@ async function createTestSession(req: express.Request, res: express.Response, ne
             acc.push(item.id)
             return acc
         }, [])
+        console.log('hello',questionIds)
 
 
         const testSessionId = await createTestSessionDB(client, {
@@ -396,20 +397,25 @@ async function createTestSession(req: express.Request, res: express.Response, ne
             create_user: bind.user_name,
             update_user: bind.user_name
         });
+        if(true){
+            for (let i = 0; i < questionIds.length; i++) {
 
-        for (let i = 0; i < questionIds.length; i++) {
-
-            const correctAnswerId = (await test_answer_get_db({
-                testquestionid: questionIds[i],
-                lang: bind.lang
-            },client)).find((item: any) => item.is_correct);
-// session
-            await createTestSessionAnswerDB(client, {
-                testSessionId: testSessionId.id,
-                questionId: questionIds[i],
-                correctAnswerId: correctAnswerId?.id || null,
-            });
+                const correctAnswerId = (await test_answer_get_db({
+                    testquestionid: questionIds[i],
+                    lang: bind.lang
+                },client)).find((item: any) => item.is_correct);
+    // session
+                await createTestSessionAnswerDB(client, {
+                    testSessionId: testSessionId.id,
+                    questionId: questionIds[i],
+                    correctAnswerId: correctAnswerId?.id || null,
+                });
+            }
         }
+        else{
+
+        }
+        
 
         await client.query('COMMIT');
 
@@ -441,21 +447,18 @@ async function putTestSession(req: express.Request, res: express.Response, next:
 
         await client.query('BEGIN');
         const bind: any = createBind(req); 
-        console.log("works")
         const allTestSessionAnswer = await getTestSessionAnswerDB(client, {
             lang: bind.lang,
             testSessionId: parseInt(bind.testsessionid, 10)
         });
-        console.log(bind.testsessionid)
+
 
         let currentAnswerUserCount = 0;
-        console.log('hkjh', bind.testsessionanswer)
+        
         for (let i = 0; i < bind.testsessionanswer.length; i++) {
-            console.log("works2")
 
             const testSessionAnswer = allTestSessionAnswer.find((item: any) => item.question_id === bind.testsessionanswer[i].questionId && item.test_session_id === parseInt(bind.testsessionid, 10));
-            console.log("vse")
-            console.log( bind.testsessionanswer[i].userAnswerId)
+
             if (testSessionAnswer.correct_answer_id === bind.testsessionanswer[i].userAnswerId) 
             {
                 currentAnswerUserCount += 1;
@@ -608,7 +611,6 @@ async function getTestList (req: express.Request, res: express.Response, next: e
             testId: bind.testid,
             ispageemployeepassingtest: bind.ispageemployeepassingtest,
         })
-        console.log(bind.ispaigtestinprogress)
         if (result.length && bind.ispaigtestinprogress && Boolean(JSON.parse(bind.ispaigtestinprogress))) {
 
             const checkPassedTest = await getTestSessionDB(client, {
