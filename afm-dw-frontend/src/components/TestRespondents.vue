@@ -21,14 +21,14 @@
             </v-card-title>
            <v-card-text>
           <v-list>
-            <v-list-item-group>
+            <v-list-item-group v-if="this.sessionAnswers.data">
               <v-list-item v-for="(answer, index) in sessionAnswers.data" :key="index">
                 <v-list-item-content>
                   <v-list-item-title class="text-h6">
                     <strong>Вопрос {{ index + 1 }}:</strong> {{ answer.question_name }}
                   </v-list-item-title>
-                  <v-list-item-title class="text-h6">
-                    <strong>Ответ:</strong> {{ answer.user_answer_name ? answer.user_answer_name : 'Нет ответа'}} 
+                  <v-list-item-title class="text-h6" style="white-space: pre-line; word-wrap: break-word; overflow: hidden;">
+                    <strong>{{answer.essay ? 'Эссе:' : 'Ответ:'}}</strong> {{ answer.user_answer_name ? answer.user_answer_name : answer.essay ? answer.essay : 'Нет ответа'}} 
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -41,7 +41,7 @@
     <div class="text-h5 mt-5 mb-5">Оценка</div>
       <v-text-field v-model="score" label="Оценка" outlined></v-text-field>
       <v-textarea v-model="report" label="Отчет" outlined rows="5"></v-textarea>
-      <v-btn v-if="score && report" color="primary">
+      <v-btn :loading="loader1" @click="sendReport" v-if="score && report" color="primary">
     Отправить
 </v-btn>
 </v-card-text>
@@ -74,9 +74,21 @@
         sessionAnswers: [],
         score: '',
         report: '',
+        loader1: false,
       };
     },
     methods: {
+      async sendReport(){
+        let odna = {test_session_id: this.sessionID,
+                    test_id: this.test_id, 
+                    grade: this.score,
+                     report_text: this.report, 
+                    }
+        console.log('odna', odna)
+        await this.axios.post(`/api/1.0/test_competency`, odna)
+        this.loader1 = true;
+        this.checkTest = false;
+      },
       onRowClick(item) {
         this.sessionID = item.id;
         this.getSessionResults()
@@ -87,13 +99,15 @@
             test_session_id: this.sessionID
         }
         this.sessionAnswers = await this.axios.get(`/api/1.0/test-session-answer`, {params})
+        console.log('advance session', this.sessionAnswers)
       },
       async getSession() {
         const params = {
           testid: this.test_id,
         };
         this.sessions = await this.axios.get(`/api/1.0/test-session`, { params });
-        console.log(this.sessions)
+        
+        console.log('session',this.sessions)
       },
     },
     created() {

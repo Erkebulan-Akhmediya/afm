@@ -310,7 +310,7 @@ export default {
 
 
         <v-dialog v-model="useDialog" width="900">
-            <v-card>
+            <v-card v-if="this.testType == 3">
                 <v-card-title class="text-h5 blue lighten-2">
                     Результат
                 </v-card-title>
@@ -353,6 +353,37 @@ export default {
                     </v-btn>
                 </v-card-actions>
             </v-card>
+            <v-card v-if="this.testType == 2">
+                <v-card-title class="text-h5 blue lighten-2">
+                    Ваш Эссе был отправлен!
+                </v-card-title>
+
+                <v-card-actions style="display: flex; justify-content: end;">
+                    <v-btn
+                        depressed
+                        color="error"
+                        @click="useDialog = false"
+                    >
+                        Закрыть
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            <v-card v-else>
+                <v-card-title class="text-h5 blue lighten-2">
+                    Ваши ответы отправлены.
+                </v-card-title>
+
+                <v-card-actions style="display: flex; justify-content: end;">
+                    <v-btn
+                        depressed
+                        color="error"
+                        @click="useDialog = false"
+                    >
+                        Закрыть
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            
         </v-dialog>
     </section>
 </template>
