@@ -21,8 +21,7 @@ export async function file_get_db(req: any) {
                     join hr.object_file obf on obf.file_id = f.id
                     join ref.object_type ot on ot.id = obf.object_type_id
                     where
-                        f.id = $1
-                        and f.is_active = true`, 
+                        f.id = $1`, 
             values: [req.query.id]}).catch(e => { console.log('error tut'); throw `Ошибка event db => ${e}`})
 
 

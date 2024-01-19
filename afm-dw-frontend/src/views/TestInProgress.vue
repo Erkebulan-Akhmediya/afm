@@ -1,13 +1,15 @@
 <script>
+import editor from "@ckeditor/ckeditor5-build-classic";
 export default {
     name: 'TestInProgressPage',
     data() {
         return {
+            editor: editor,
             useTests: {},
             useSessionStorageTestData: {},
             useDialog: false,
             useTotalResultTest: {},
-            drawer: false,
+            drawer: true,
             group: null,
             useTimerEndState: false,
             useIntervalTimer: null,
@@ -27,7 +29,7 @@ export default {
         try {
             this.useSessionStorageTestData = JSON.parse(sessionStorage.getItem('testData'));
             await this.getData({testId: this.useSessionStorageTestData.testId});
-
+            
             this.useIntervalTimer = setInterval(() => {
                 this.accessTime = this.$moment(this.useEndTimeTest).diff(this.$moment())
                 if (this.$moment(this.useEndTimeTest).isBefore(this.$moment())) {
@@ -79,13 +81,34 @@ export default {
                         employeeId: sessionStorage.getItem('userId'),
                         testId: bind.testId,
                         isPaigTestInProgress: true,
-
+                        // testType would be good 
                     }
                 });
                 this.useTests = data;
-                this.testType = this.useTests.testSessionAnswer[0].questionTypeId;
-                console.log('test type',this.testType)
                 console.log(this.useTests)
+                this.testType = this.useTests.testSessionAnswer[0].questionTypeId;
+                if(this.testType == 2){
+                    const topic = await this.axios.get(`/api/1.0/test-session-essay`, {
+                        params: {
+                            test_session_id: this.useSessionStorageTestData.testSessionId
+                        }
+                    });
+                    this.useTests.testSessionAnswer[0].questionId = topic.data[0].question_id
+                    this.useTests.testSessionAnswer[0].questionName = topic.data[0].question_name
+                    
+                }
+                if(this.testType == 3){
+                    let image_url
+                    for(let i = 0; i < this.useTests.testSessionAnswer.length; i++){
+                        console.log(this.useTests.testSessionAnswer[i].questionName)
+                        image_url = await this.axios.get('/api/1.0/file-link/', { params: {
+                            id: parseInt(this.useTests.testSessionAnswer[i].questionName, 10),
+                        }
+                        });
+                        console.log('hey', i, image_url)
+                        this.useTests.testSessionAnswer[i].questionName = image_url.data
+                    }
+                }
                 console.log('please watch test content',this.useTests)
                 this.useEndTimeTest = this.$moment(data.startTime).add(data.duration, 'minutes');
             } catch (e) {
@@ -107,10 +130,11 @@ export default {
                         userAnswerId: item.userAnswerId,
                         isEssay: this.testType == 2 ?  true : false,
                         essay: this.testType == 2 ? this.essay : '',
+                        testType: this.testType,
                     })
                     return acc;
                 }, [])
-                console.log(testSessionAnswer)
+                console.log('here is testsessionAnswer', testSessionAnswer)
 
                 const {data} = await this.axios.put(`/api/1.0/test/${this.useSessionStorageTestData.testId}/employee/${sessionStorage.getItem('userId')}/testSession/${this.useSessionStorageTestData.testSessionId}`, {
                     statusId: 2,
@@ -149,6 +173,10 @@ export default {
             const transitTime = new Date(item.end_time).getTime() - new Date(item.start_time).getTime()
             return this.$moment.utc(new Date(transitTime)).format('HH:mm:ss')
         },
+        preventPaste(event) {
+      // Предотвращаем вставку текста из буфера обмена
+      event.preventDefault();
+    },
         
         getPercent(item) {
             const percent = Math.round((this.useTotalResultTest.currentAnswerUserCount * 100) / (item.testSessionAnswer || []).length)
@@ -192,7 +220,7 @@ export default {
             }
         },
         group () {
-            this.drawer = false
+            this.drawer = true
         },
         useTimerEndState(val) {
             if (val) {
@@ -203,6 +231,10 @@ export default {
                 clearInterval(this.useIntervalTimer)
             }
         },
+        preventPaste(event) {
+      // Предотвращаем вставку текста из буфера обмена
+      event.preventDefault();
+    },
     },
 }
 </script>
@@ -230,7 +262,7 @@ export default {
                             <v-row>
                                 <span>Описание: {{useTests.description}}</span>
                             </v-row>
-                            <v-row>
+                            <v-row v-if="this.testType != 2">
                                 <span>Количество вопросов: {{useTests.count_question}}</span>
                             </v-row>
                             <v-row>
@@ -242,7 +274,6 @@ export default {
             </v-row>
             <v-row>
                 <div :style="{height: `${useHeightBoxQuestion}px`, overflowY: `auto`, position: 'absolute', overflowX: 'hidden', width: '10rem'}">
-                    <v-app-bar-nav-icon @click.stop="drawer = !drawer" style="top: 2rem; left: 1rem;"></v-app-bar-nav-icon>
                     <v-navigation-drawer
                         v-model="drawer"
                         absolute
@@ -274,10 +305,34 @@ export default {
                             :id="`questionId${i+1}`"
                             class="questionsBox"
                             style="margin: 1rem auto; padding: 1rem 1rem 2rem 1rem;" color="white" width="70%">
-                            <div>
+                            <div v-if="question.questionTypeId == 3" class="d-flex">
+                                <div>
+                                    <v-img width="300" height="300" :src="question.questionName"></v-img>
+                                </div>
+                                <div style="padding: 2rem 0 0 2rem">
+                                <label class="container-radio" v-for="(answer,j) in question.answers" :key="j">
+                                    {{answer.name}}
+                                    <input type="radio" :class="`questionAnswerClassInput${i+1}`" :id="`questionID${i+1}AnswerId${j+1}`" :name="`questionAnswerNameInput${i+1}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
+                                    <span class="checkmark">
+                                        <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i+1}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
+                                    </span>
+                                </label>
+                                </div>
+                                 
+                            </div>
+                            
+                            <div v-if="question.questionTypeId == 2" width="100%">
+                                <div>
+                                    Тема: {{question.questionName}}
+                                </div>
+                                <v-textarea v-model="essay" height="500" class="mt-10 no-paste" label="Эссе" outlined @paste="preventPaste"></v-textarea>
+
+                            </div>
+                            <div v-if="question.questionTypeId == 1">
+                                <div>
                                 {{i+1}}. {{question.questionName}}
                             </div>
-                            <div v-if="question.questionTypeId == 1" style="padding: 2rem 0 0 2rem">
+                            <div style="padding: 2rem 0 0 2rem">
                                 <label class="container-radio" v-for="(answer,j) in question.answers" :key="j">
                                     {{answer.name}}
                                     <input type="radio" :class="`questionAnswerClassInput${i+1}`" :id="`questionID${i+1}AnswerId${j+1}`" :name="`questionAnswerNameInput${i+1}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
@@ -286,8 +341,6 @@ export default {
                                     </span>
                                 </label>
                             </div>
-                            <div v-if="question.questionTypeId == 2" style="padding: 2rem 0 0 2 rem">
-                                <v-textarea v-model="essay" height="500" class="mt-10" label="Эссе" outlined></v-textarea>
                             </div>
                         </v-sheet>
                     </div>
@@ -353,7 +406,7 @@ export default {
                     </v-btn>
                 </v-card-actions>
             </v-card>
-            <v-card v-if="this.testType == 2">
+            <v-card v-else-if="this.testType == 2">
                 <v-card-title class="text-h5 blue lighten-2">
                     Ваш Эссе был отправлен!
                 </v-card-title>
@@ -430,6 +483,7 @@ export default {
   position: absolute;
   display: none;
 }
+
 
 .container-radio input:checked ~ .checkmark:after {
     display: block;

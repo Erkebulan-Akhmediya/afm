@@ -197,7 +197,6 @@ export async function test_question_rel_post_db(bind: any, client: Client) {
 
 export async function test_answer_post_db(bind: any, client: Client) {
     try {      
-        console.log('works')  
         const activeTest = await checkActiveTest(client, {question_id: bind.test_question_id})
         // if(activeTest.length && bind.isEssay != 1) {
         //     let tests = activeTest.map((item: any) => {
@@ -381,7 +380,7 @@ async function getTestSessionDB(client: Client, bind: any) {
             hr.employee e
         ${sql_where_clause}
         order by ts.id desc`
-        console.log(query, queryBind)
+
         let {rows: data}: any = await client.query(query, queryBind)
         return data;
     } catch (err) {
@@ -516,8 +515,7 @@ async function putTestSessionDB(client: Client, bind: any) {
         if (bind.id) {
             query += ` where id = $${queryBind.push(bind.id)}`;
         }
-        console.log(query)
-        console.log(queryBind)
+ 
         await client.query(query, queryBind) 
 
     } catch (err) {
@@ -527,7 +525,6 @@ async function putTestSessionDB(client: Client, bind: any) {
 }
 
 async function getTestSessionAnswerDB(client: Client, bind: any) {
-    console.log(bind)
     try {
         let sql_where_clause = ''
         let queryBind = []
@@ -545,9 +542,6 @@ async function getTestSessionAnswerDB(client: Client, bind: any) {
         left join hr.test_answer a on tsa.user_answer_id = a.id
         join hr.test_answer ac on tsa.correct_answer_id = ac.id
         ${sql_where_clause}`
-        console.log('finish1')
-        console.log(query)
-        console.log(queryBind)
         let {rows: data}: any = await client.query(query, queryBind)
         
         return data;
@@ -556,10 +550,10 @@ async function getTestSessionAnswerDB(client: Client, bind: any) {
         throw err;
     }
 }
+
 async function getEssaySessionAnswerDB(client: Client, bind: any){
     try {
         let sql_where_clause = ''
-
         let query = `
         SELECT 
         tse.id,
@@ -573,10 +567,7 @@ async function getEssaySessionAnswerDB(client: Client, bind: any){
             hr.test_question tq ON tse.question_id = tq.id
         WHERE
             tse.test_session_id = ${bind.testSessionID};
-
-        ${sql_where_clause}`
-        console.log('finish1')
-        console.log('final query here my boy', query, bind.testSessionID)
+    `
         let {rows: data}: any = await client.query(query)
         
         return data;
@@ -586,7 +577,6 @@ async function getEssaySessionAnswerDB(client: Client, bind: any){
     }
 }
 async function getTestTypeDB(client: Client, bind: any) {
-    console.log(bind)
     try {
         let sql_where_clause = ''
         let queryBind = []
@@ -594,11 +584,8 @@ async function getTestTypeDB(client: Client, bind: any) {
             sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} tsa.test_session_id = $${queryBind.push(bind.testSessionId)}`
         }
         let query = `
-        selec
+        select
         ${sql_where_clause}`
-        console.log('finish1')
-        console.log(query)
-        console.log(queryBind)
         let {rows: data}: any = await client.query(query, queryBind)
         
         return data;
@@ -633,7 +620,7 @@ async function createTestSessionAnswerDB(client: Client, bind: any) {
 }
 async function createTestSessionEssayDB(client: Client, bind: any) {
     try {
-        console.log('essay post works')
+        
         let {rows: {[0]: data}} = await client.query({
             text: `
                 insert into hr.test_session_essay
@@ -657,7 +644,6 @@ async function createTestSessionEssayDB(client: Client, bind: any) {
 }
 
 async function putTestSessionAnswerDB(client: Client, bind: any) {
-    console.log('finish3')
     try {
         let queryBind = [];
         let query = `update hr.test_session_answer set`;
@@ -674,8 +660,6 @@ async function putTestSessionAnswerDB(client: Client, bind: any) {
             if (bind.id) {
                 query += ` where id = $${queryBind.push(bind.id)}`;
             }
-            console.log(query)
-            console.log(queryBind)
             await client.query(query, queryBind) 
         }
     } catch (err) {
@@ -700,14 +684,12 @@ async function putTestSessionEssayDB(client: Client, bind: any) {
 
         // Check if there are any valid updates
         if (queryBind.length === 0) {
-            console.log('No valid updates provided.');
             return; // or throw an error, depending on your requirements
         }
 
         // Add WHERE clause at the end
         query += ` WHERE test_session_id = $${queryBind.push(bind.test_session_id)}`;
 
-        console.log('final query', query, queryBind);
         
         await client.query(query, queryBind);
     } catch (err) {
@@ -880,19 +862,53 @@ export async function test_competency_postDB(client: Client, bind: any) {
         await client.query({
             text: `
                 insert into hr.test_competency_result
-                    (test_session_id, test_id, grade, report_text)
+                    (test_session_id, test_id, grade, report_text, status)
                 values
-                    ($1, $2, $3, $4) `,
+                    ($1, $2, '', '', 'Не проверено') `,
             values: [
                 bind.test_session_id,
                 bind.test_id,
-                bind.grade,
-                bind.report_text
             ]
         }).catch((e: any) => { 
             throw `Ошибка hr.test_competency_postDB post db => ${e} ${JSON.stringify(bind)}`
         });
 
+    } catch (err) {
+        log.error(err)
+        throw err;
+    }
+}
+export async function test_competency_putDB(client: Client, bind: any) {
+    try {           
+        console.log('pre query')
+        await client.query({
+            text: `
+                update hr.test_competency_result set grade = $1, report_text = $2, status = 'Проверено' where test_session_id = $3`,
+            values: [
+                bind.grade,
+                bind.report_text,
+                bind.test_session_id
+            ]
+        }).catch((e: any) => { 
+            throw `Ошибка hr.test_competency_putDB put db => ${e} ${JSON.stringify(bind)}`
+        });
+
+    } catch (err) {
+        log.error(err)
+        throw err;
+    }
+}
+export async function test_competency_getDB(client: Client, bind: any) {
+    try {           
+        let {rows: data}: any = await client.query({
+            text: `
+            select * from hr.test_competency_result where test_id = $1
+                `,
+                values: [bind.test_id],
+        }).catch((e: any) => { 
+            throw `Ошибка hr.test_competency_getDB get db => ${e} ${JSON.stringify(bind)}`
+        });
+        return data;
     } catch (err) {
         log.error(err)
         throw err;
