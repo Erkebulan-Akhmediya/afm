@@ -5,11 +5,6 @@
 
         </div>
         <TestRespondents :test_id="30"></TestRespondents>
-        <div class="text-h4 mb-10 mt-10">
-          Проверка эссе
-
-        </div>
-        <TestRespondents :test_id="31"></TestRespondents>
       </div>
   </template>
   

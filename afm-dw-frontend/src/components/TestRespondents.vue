@@ -31,21 +31,21 @@
             <v-list-item-group v-if="this.sessionAnswers.data">
               <v-list-item v-for="(answer, index) in sessionAnswers.data" :key="index">
                 <v-list-item-content>
-                  <v-list-item-title class="text-h6">
+                  <v-list-item-text class="text-h6">
                     <strong>Вопрос {{ index + 1 }}:</strong> {{ answer.question_name }}
-                  </v-list-item-title>
-                  <v-list-item-title class="text-h6" style="white-space: pre-line; word-wrap: break-word; overflow: hidden;">
+                  </v-list-item-text>
+                  <v-list-item-text class="text-h6" style="white-space: pre-line; word-wrap: break-word; overflow: hidden;">
                     <strong>{{answer.essay ? 'Эссе:' : 'Ответ:'}}</strong> 
                     <span v-if="answer.user_answer_name">
                       {{ answer.user_answer_name ? answer.user_answer_name : 'Нет ответа' }}
                     </span>
                     <span v-else-if="answer.essay">
-                      <p v-html="answer.essay"></p>
+                      <p>{{ answer.essay }}</p>
                     </span>
                     <span v-else>
                       Нет ответа
                     </span>
-                  </v-list-item-title>
+                  </v-list-item-text>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -93,10 +93,6 @@
       ],
       checkContent: false,
 
-        data: [
-          { employee_id: 1, start_time: '2024-01-15', end_time: '2024-01-20', status_id: 'Active' },
-          { employee_id: 2, start_time: '2024-01-16', end_time: '2024-01-25', status_id: 'Inactive' },
-        ],
         checkTest: false,
         sessionID: -1,
         sessions: [],
@@ -159,7 +155,6 @@
         const params = {
           test_id: this.test_id,
         };
-        // this.sessions = await this.axios.get(`/api/1.0/test-session`, { params });
         const data = await this.axios.get(`/api/1.0/test-competency`, { params });
         this.sessions = data.data
         console.log('new data', data)

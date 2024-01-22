@@ -193,23 +193,15 @@
       else {
 
                 this.items.push(
-          { title: this.$t('mainPage.mainMenu.home'), icon: 'mdi-view-dashboard-outline', href: '/'},
           { title: this.$t('mainPage.mainMenu.tests'), icon: 'mdi-clipboard-outline', href: '/tests' },
-          { title: 'Заявления', icon: 'mdi-clipboard-text-multiple-outline', href: '/all_requests' },
-          { title: 'Проверка теста', icon: 'mdi-plus', href: '/test_check'},
-          { title: 'IQ тест', icon: 'mdi-plus', href: '/iq_test'},
-          { title: 'Тест по компетенций', icon: 'mdi-plus', href: '/comp_test'},
-          { title: 'Эссе тест', icon: 'mdi-plus', href: '/essay_test'},
+          { title: 'Проверка психотеста', icon: 'mdi-note-text-outline', href: '/test_check'},
+          { title: 'Проверка эссе', icon: 'mdi-note-text-outline', href: '/essay_check'},
         )
 
 
 
 
-        if (this.configCode == 'afm') {
-          this.items.push(
-            { title: this.$t('mainPage.mainMenu.knowBaseGrade'), icon: 'mdi-view-column-outline', href: '/knowbasegrade' },
-          )
-        }
+
       }
 
       this.axios.get(`/api/1.0/employee/:id`, {localParams: {id: sessionStorage.getItem('userId')}})

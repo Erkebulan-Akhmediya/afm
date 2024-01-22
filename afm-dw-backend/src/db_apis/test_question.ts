@@ -528,8 +528,8 @@ async function getTestSessionAnswerDB(client: Client, bind: any) {
     try {
         let sql_where_clause = ''
         let queryBind = []
-        if(bind.testSessionId) {
-            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} tsa.test_session_id = $${queryBind.push(bind.testSessionId)}`
+        if(bind.testSessionID) {
+            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} tsa.test_session_id = $${queryBind.push(bind.testSessionID)}`
         }
         let query = `
         select 
@@ -576,24 +576,7 @@ async function getEssaySessionAnswerDB(client: Client, bind: any){
         throw err;
     }
 }
-async function getTestTypeDB(client: Client, bind: any) {
-    try {
-        let sql_where_clause = ''
-        let queryBind = []
-        if(bind.testSessionId) {
-            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} tsa.test_session_id = $${queryBind.push(bind.testSessionId)}`
-        }
-        let query = `
-        select
-        ${sql_where_clause}`
-        let {rows: data}: any = await client.query(query, queryBind)
-        
-        return data;
-    } catch (err) {
-        log.error(err)
-        throw err;
-    }
-}
+
 
 async function createTestSessionAnswerDB(client: Client, bind: any) {
     try {
@@ -902,7 +885,7 @@ export async function test_competency_getDB(client: Client, bind: any) {
     try {           
         let {rows: data}: any = await client.query({
             text: `
-            select * from hr.test_competency_result where test_id = $1
+            select * from hr.test_competency_result where test_id = $1 order by id desc
                 `,
                 values: [bind.test_id],
         }).catch((e: any) => { 

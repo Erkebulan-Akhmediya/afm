@@ -25,12 +25,11 @@ import {
     get_file_name,
     get_file_api,
     file_link_get,
-    getFile
 } from '../controllers/file';
 import {media_get} from '../controllers/media';
 import {doc_get, doc_getJbk, doc_getPen, doc_getExp, doc_getHoliday, get_holidays, pdf_workplace} from '../controllers/doc';
 import {know_base_get, know_base_post, know_base_delete, know_base_put} from '../controllers/know_base';
-import {test_get, test_question_get, test_answer_get, test_post, createTestQuestion, test_answer_post, test_put, putTestQuestion, test_answer_put, createTestSession, putTestSession, getTestList, test_question_rel_post, test_question_rel_put, getTestSession, getTestSessionAnswer, getEssayList, getTestType, test_competency_post, test_competency_put, test_competency_get, getTestSessionEssay} from '../controllers/test_question';
+import {test_get, test_question_get, test_answer_get, test_post, createTestQuestion, test_answer_post, test_put, putTestQuestion, test_answer_put, createTestSession, putTestSession, getTestList, test_question_rel_post, test_question_rel_put, getTestSession, getTestSessionAnswer, getEssayList, test_competency_post, test_competency_put, test_competency_get, getTestSessionEssay} from '../controllers/test_question';
 import {get_reference, get_reference_pdf} from '../controllers/reference';
 import {call_history} from '../middleware/call_history';
 import {getRatingTest, getKnowLevel, getRatingActive} from '../controllers/rating';
@@ -153,7 +152,6 @@ export const routes = (app: express.Application) => {
     router.put('/file/:id', file_put);
     router.put('/file-disable/:id', file_disable);  
     router.get('/file/name/:id', get_file_name);  
-    router.get('/file/:bucketName/:fileName', getFile)
     
 
 
@@ -201,7 +199,6 @@ export const routes = (app: express.Application) => {
     router.post('/testQuestion', createTestQuestion); 
     router.put('/testQuestion', putTestQuestion); 
     router.get('/test-lists', getTestList); 
-    router.get('/test-type', getTestType);
     router.get('/essay-lists', getEssayList)
     router.get('/test-session', getTestSession) 
     router.get('/test-session-answer', getTestSessionAnswer) 

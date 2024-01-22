@@ -447,9 +447,8 @@ async function getTestSessionAnswer (req: express.Request, res: express.Response
     try {
         client = get_client(); await client.connect();
         const bind: any = createBind(req);          
-        
         const sessions = await getTestSessionAnswerDB(client, {
-            testSessionId: parseInt(bind.test_session_id, 10),
+            testSessionID: parseInt(bind.test_session_id, 10),
             lang: bind.lang
         });
         const essaySessions = await getEssaySessionAnswerDB(client, {
@@ -480,40 +479,13 @@ export async function getTestSessionEssay (req: express.Request, res: express.Re
     let client: Client | null = null;
     try {
         client = get_client(); await client.connect();
-        const bind: any = createBind(req);          
+        const bind: any = createBind(req);       
         const topic = await getEssaySessionAnswerDB(client, {
-            testSessionId: parseInt(bind.test_session_id, 10),
+            testSessionID: parseInt(bind.test_session_id, 10),
         });
-
                 res.locals.data = {
             statusCode: 200,
             data: topic
-        }
-
-        next();
-    } catch (error) {
-        next(error)
-    } finally {
-        if (client) {
-            await client.end()
-        }
-    }
-}
-
-
-async function getTestType (req: express.Request, res: express.Response, next: express.NextFunction) {   // not fully written
-    let client: Client | null = null;
-    try {
-        client = get_client(); await client.connect();
-        const bind: any = createBind(req);          
-
-        const type = await getTestSessionAnswerDB(client, {
-            testId: parseInt(bind.test_id, 10),
-        });
-
-                res.locals.data = {
-            statusCode: 200,
-            data: type
         }
 
         next();
@@ -621,7 +593,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
        
         const allTestSessionAnswer = await getTestSessionAnswerDB(client, {
             lang: bind.lang,
-            testSessionId: parseInt(bind.testsessionid, 10)
+            testSessionID: parseInt(bind.testsessionid, 10)
         });
     
      
@@ -676,7 +648,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
             lang: bind.lang,
             testId: parseInt(bind.testid, 10)
         });
-
+        console.log(testSession[0].start_time)
         res.locals.data = {
             statusCode: 200,
             data: {
@@ -807,8 +779,9 @@ async function getTestList (req: express.Request, res: express.Response, next: e
                 employeeId: parseInt(bind.employeeid, 10),
                 testId: parseInt(bind.testid, 10)
             });
-            result = {...result[0], startTime: new Date(checkPassedTest[0].start_time + '+0000'), testSessionAnswer: []}; // adding starTime(with value)
+            result = {...result[0], startTime: new Date(checkPassedTest[0].start_time ), testSessionAnswer: []}; // adding starTime(with value)
             //and testSession answer(empty array)
+            console.log(result)
             const db_getQuestionByTestID = await test_question_get_db({ test_id: result.test_id, lang: bind.lang }, client);
 
             let getQuestionByTestID: string | any[] = [] // Create a shallow copy to avoid modifying the original array
@@ -842,7 +815,7 @@ async function getTestList (req: express.Request, res: express.Response, next: e
         }
 
         if (result.length && bind.ispageemployeepassingtest && Boolean(JSON.parse(bind.ispageemployeepassingtest))) {
-            result = result.map((item: any) => ({...item, start_time: new Date(item.start_time + '+0000'), end_time: new Date(item.end_time + '+0000')}))
+            result = result.map((item: any) => ({...item, start_time: new Date(item.start_time ), end_time: new Date(item.end_time)}))
         }
 
         await client.query('COMMIT')
@@ -871,7 +844,6 @@ export {
     getTestList,
     getTestSession,
     getTestSessionAnswer,
-    getTestType
 }
 
 async function checkQuestion(bind: any, client: Client | null) {

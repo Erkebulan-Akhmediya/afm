@@ -23,6 +23,8 @@ export default {
             isEndTest: false,
             essay: '',
             testType: -1,
+            itemsPerPage: 5,
+            currentPage: 1,
         }
     },
     async created() {
@@ -48,6 +50,10 @@ export default {
         }
     },
     methods: {
+        changePage(newPage) {
+            this.currentPage = newPage;
+        },
+
         blur(isBlur = false) {
             if(isBlur || this.useTimerEndState || this.isEndTest) {
                 this.isBlured.map(item => {
@@ -212,6 +218,17 @@ export default {
                 next()
         }})
     },
+    computed:{
+        totalPages() {
+            return Math.ceil(this.useTests.testSessionAnswer.length / this.itemsPerPage);
+        },
+
+        paginatedQuestions() {
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return this.useTests.testSessionAnswer.slice(start, end);
+        },
+    },
     watch: {
         useDialog(val) {
             if (!val && Object.keys(this.useTotalResultTest).length) {
@@ -254,57 +271,43 @@ export default {
             </v-row>
             <v-row>
                 <v-col>
-                    <v-sheet style="margin: 0 auto; padding: 1rem 1rem 2rem 1rem;" color="white" elevation="6" width="95%">
-                        <div>
-                            {{useTests.name}}
-                        </div>
-                        <div style="padding: 2rem 0 0 2rem">
-                            <v-row>
-                                <span>Описание: {{useTests.description}}</span>
-                            </v-row>
-                            <v-row v-if="this.testType != 2">
-                                <span>Количество вопросов: {{useTests.count_question}}</span>
-                            </v-row>
-                            <v-row>
-                                <span>Время на прохождение: {{useTests.duration}} мин</span>
-                            </v-row>
-                        </div>
-                    </v-sheet>
+                        <v-expansion-panels >
+                            <v-expansion-panel >
+                                <v-expansion-panel-header>
+                                {{ useTests.name }}(Читать описание)
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content style="padding-bottom:20px;">
+                                    <div style="padding: 2rem 0 0 2rem">
+                                    <v-row>
+                                        <span>Описание: {{ useTests.description }}</span>
+                                    </v-row>
+                                    <v-row>
+                                        <span>Количество вопросов: {{ useTests.count_question }}</span>
+                                    </v-row>
+                                    <v-row>
+                                        <span>Время на прохождение: {{ useTests.duration }} мин</span>
+                                    </v-row>
+                                    </div>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+
+
+                    
+                    
                 </v-col>
             </v-row>
             <v-row>
-                <div :style="{height: `${useHeightBoxQuestion}px`, overflowY: `auto`, position: 'absolute', overflowX: 'hidden', width: '10rem'}">
-                    <v-navigation-drawer
-                        v-model="drawer"
-                        absolute
-                        bottom
-                        temporary
-                    >
-                        <v-list
-                            nav
-                            dense
-                        >
-                            <v-list-item-group
-                            v-model="group"
-                            active-class="deep-purple--text text--accent-4"
-                            >
-                                <v-list-item style="text-align: start;"
-                                        v-for="(question,i) in useTests.testSessionAnswer"
-                                        :key="i">
-                                    <v-list-item-title :href="`#questionId${i+1}`" @click.prevent="anchorLink">Вопрос {{i+1}}</v-list-item-title>
-                                </v-list-item>
-                            </v-list-item-group>
-                        </v-list>
-                    </v-navigation-drawer>
-                </div>
                 <v-col>
                     <div class="scrollWrapper" :style="{height: `${useHeightBoxQuestion}px`, overflowY: `auto`}" id="boxquestion">
                         <v-sheet  
-                            v-for="(question,i) in useTests.testSessionAnswer"
-                            :key="i"
-                            :id="`questionId${i+1}`"
+                            v-for="(question, i) in paginatedQuestions"
+                            :key="i + 1 + (currentPage - 1) * itemsPerPage"
+                            :id="`questionId${i + 1 + (currentPage - 1) * itemsPerPage}`"
                             class="questionsBox"
-                            style="margin: 1rem auto; padding: 1rem 1rem 2rem 1rem;" color="white" width="70%">
+                            style="margin: 1rem auto; padding: 1rem 1rem 2rem 1rem;"
+                            color="white"
+                            width="70%">
                             <div v-if="question.questionTypeId == 3" class="d-flex">
                                 <div>
                                     <v-img width="300" height="300" :src="question.questionName"></v-img>
@@ -312,7 +315,7 @@ export default {
                                 <div style="padding: 2rem 0 0 2rem">
                                 <label class="container-radio" v-for="(answer,j) in question.answers" :key="j">
                                     {{answer.name}}
-                                    <input type="radio" :class="`questionAnswerClassInput${i+1}`" :id="`questionID${i+1}AnswerId${j+1}`" :name="`questionAnswerNameInput${i+1}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
+                                <input type="radio" :class="`questionAnswerClassInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :id="`questionID${i + 1 + (currentPage - 1) * itemsPerPage}AnswerId${j+1}`" :name="`questionAnswerNameInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
                                     <span class="checkmark">
                                         <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i+1}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
                                     </span>
@@ -330,21 +333,28 @@ export default {
                             </div>
                             <div v-if="question.questionTypeId == 1">
                                 <div>
-                                {{i+1}}. {{question.questionName}}
+                                    {{(i + 1) + (currentPage - 1) * itemsPerPage}}. {{question.questionName}}
+
                             </div>
                             <div style="padding: 2rem 0 0 2rem">
                                 <label class="container-radio" v-for="(answer,j) in question.answers" :key="j">
                                     {{answer.name}}
-                                    <input type="radio" :class="`questionAnswerClassInput${i+1}`" :id="`questionID${i+1}AnswerId${j+1}`" :name="`questionAnswerNameInput${i+1}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
+                                    <input type="radio" :class="`questionAnswerClassInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :id="`questionID${i + 1 + (currentPage - 1) * itemsPerPage}AnswerId${j+1}`" :name="`questionAnswerNameInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
                                     <span class="checkmark">
-                                        <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i+1}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
+                                        <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i + 1 + (currentPage - 1) * itemsPerPage}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
                                     </span>
                                 </label>
                             </div>
                             </div>
                         </v-sheet>
                     </div>
+                    <v-row>
+                        <v-col>
+                            <v-pagination v-if="totalPages > 1" v-model="currentPage" :length="totalPages" @input="changePage"></v-pagination>
+                        </v-col>
+                    </v-row>
                 </v-col>
+                
             </v-row>
             <v-row>
                 <v-col>
@@ -354,7 +364,7 @@ export default {
                         color="primary"
                         @click="endTest"
                         >
-                        ЗАВЕР
+                        ЗАВЕРШИТЬ
                         </v-btn>
                     </div>
                 </v-col>
