@@ -21,10 +21,10 @@
         </template>
 
   </v-data-table>
-      <v-dialog max-width="1100" v-model="checkTest">
-        <v-card>
-            <v-card-title>
-                Проверка
+      <v-dialog max-width="1500" v-model="checkTest">
+        <v-card class="pt-3">
+            <v-card-title class="text-h4 pb-5">
+                Проверка опроса по определений личностных качеств
             </v-card-title>
            <v-card-text>
           <v-list>
@@ -35,15 +35,31 @@
                     <strong>Вопрос {{ index + 1 }}:</strong> {{ answer.question_name }}
                   </v-list-item-text>
                   <v-list-item-text class="text-h6" style="white-space: pre-line; word-wrap: break-word; overflow: hidden;">
-                    <strong>{{answer.essay ? 'Эссе:' : 'Ответ:'}}</strong> 
+                    
                     <span v-if="answer.user_answer_name">
-                      {{ answer.user_answer_name ? answer.user_answer_name : 'Нет ответа' }}
+                      <v-chip
+                        class="ma-2"
+                        color="success"
+                      >
+                        
+                        Ответ:
+                      </v-chip>
+                      {{ answer.user_answer_name }}
                     </span>
                     <span v-else-if="answer.essay">
+                      <strong>Эссе:</strong> 
                       <p>{{ answer.essay }}</p>
                     </span>
-                    <span v-else>
-                      Нет ответа
+                    <span v-else style="color:red;">
+                      <v-chip
+                        class="ma-2"
+                        color="red"
+                        outlined
+                        
+                      >
+                        
+                        Нет ответа
+                      </v-chip>
                     </span>
                   </v-list-item-text>
                 </v-list-item-content>

@@ -7,7 +7,6 @@ export default {
             useTests: [],
             useDialog: false,
             useErrMsg: {},
-            backImage: '',
 
         }
     },
@@ -20,7 +19,6 @@ export default {
                 return
             }
             await this.search();
-            
         } catch(e) {
             console.log(e);
         }
@@ -38,7 +36,6 @@ export default {
                     }
                 });
                 this.useTests = data;
-                console.log('needed data', data)
             } catch (e) {
                 console.log(e);
             }
@@ -150,7 +147,6 @@ export default {
                     </v-expansion-panels>
                 </v-col>
             </v-row>
-
         </div>
 
 

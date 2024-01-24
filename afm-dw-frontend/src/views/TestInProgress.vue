@@ -1,5 +1,6 @@
 <script>
 import editor from "@ckeditor/ckeditor5-build-classic";
+import CustomPaginationVue from "../components/CustomPagination.vue";
 export default {
     name: 'TestInProgressPage',
     data() {
@@ -23,9 +24,13 @@ export default {
             isEndTest: false,
             essay: '',
             testType: -1,
-            itemsPerPage: 5,
+            itemsPerPage: 1,
             currentPage: 1,
+            endDialog: false,
         }
+    },
+    components:{
+        CustomPaginationVue
     },
     async created() {
         try {
@@ -45,6 +50,7 @@ export default {
             }, 1000)
 
             this.useHeightBoxQuestion = (document.querySelector('body').clientHeight - document.getElementById('boxquestion').offsetTop) - 170;
+            console.log('hegith',this.useHeightBoxQuestion)
         } catch (e) {
             console.log(e)
         }
@@ -53,6 +59,21 @@ export default {
         changePage(newPage) {
             this.currentPage = newPage;
         },
+        handlePageChange() {
+      window.scrollTo({
+        top: 0, // or the top position of a specific element
+        behavior: 'smooth'
+      });
+    },
+
+        getPaginationItemColor(questionIndex) {
+            return this.isQuestionAnswered(questionIndex) ? 'green' : 'default';
+        },
+
+        isQuestionAnswered(questionIndex) {
+            const question = this.useTests.testSessionAnswer[questionIndex];
+            return question && question.userAnswerId !== undefined;
+        },
 
         blur(isBlur = false) {
             if(isBlur || this.useTimerEndState || this.isEndTest) {
@@ -60,13 +81,13 @@ export default {
                     clearTimeout(item)
                 })
                 return
-            } else if(this.isBluredData < 2) {
+            } else if(this.isBluredData < 2 && this.endDialog == false) {
                 const timeout = setTimeout(() => {
                     alert('При повторном покидании страницы теста результат отправится автоматически')
                     this.isBluredData ++
                 }, this.timeToBlured);
                 this.isBlured.push(timeout)
-            } else if(this.isBluredData < 10) {
+            } else if(this.isBluredData < 10 && this.endDialog == false) {
                 const timeout = setTimeout(() => {
                     alert('Вы повторно покинули страницу, результат был отправлен на сервер.')
                     this.isBluredData = 10
@@ -91,9 +112,9 @@ export default {
                     }
                 });
                 this.useTests = data;
-                console.log(this.useTests)
                 this.testType = this.useTests.testSessionAnswer[0].questionTypeId;
-                if(this.testType == 2){
+                for(let i = 0; i < this.useTests.testSessionAnswer.length; i++){
+                    if(this.useTests.testSessionAnswer[i].questionTypeId == 2){
                     const topic = await this.axios.get(`/api/1.0/test-session-essay`, {
                         params: {
                             test_session_id: this.useSessionStorageTestData.testSessionId
@@ -101,21 +122,25 @@ export default {
                     });
                     this.useTests.testSessionAnswer[0].questionId = topic.data[0].question_id
                     this.useTests.testSessionAnswer[0].questionName = topic.data[0].question_name
-                    
-                }
-                if(this.testType == 3){
-                    let image_url
-                    for(let i = 0; i < this.useTests.testSessionAnswer.length; i++){
-                        console.log(this.useTests.testSessionAnswer[i].questionName)
-                        image_url = await this.axios.get('/api/1.0/file-link/', { params: {
-                            id: parseInt(this.useTests.testSessionAnswer[i].questionName, 10),
+                    break;
+                    }
+                    if(this.useTests.testSessionAnswer[i].questionTypeId == 3){
+                        if(!this.useTests.testSessionAnswer[i].questionName.includes(' ')){
+                            let image_url
+                            
+                            image_url = await this.axios.get('/api/1.0/file-link/', { params: {
+                                id: parseInt(this.useTests.testSessionAnswer[i].questionName, 10),
+                            }
+                            });
+                            this.useTests.testSessionAnswer[i].image_link = image_url.data   
                         }
-                        });
-                        console.log('hey', i, image_url)
-                        this.useTests.testSessionAnswer[i].questionName = image_url.data
+                                                  
+                            
+                            
                     }
                 }
-                console.log('please watch test content',this.useTests)
+                
+                console.log('second change',this.useTests)
                 this.useEndTimeTest = this.$moment(data.startTime).add(data.duration, 'minutes');
             } catch (e) {
                 if (e.data && e.data.ERR_MSG) {
@@ -124,6 +149,12 @@ export default {
                     this.$router.push(`/tests`)
                 }
             }
+        },
+        endTestDialog(){
+            this.endDialog = true
+        },
+        cancelEndTest(){
+            this.endDialog = false
         },
         async endTest() {
             // 
@@ -146,10 +177,10 @@ export default {
                     statusId: 2,
                     testSessionAnswer
                 });
-                
+                this.endDialog = false
                 this.useTotalResultTest = data;
                 this.useDialog = true;
-
+                
             } catch (e) {
                 console.log(e)
             }
@@ -222,6 +253,13 @@ export default {
         totalPages() {
             return Math.ceil(this.useTests.testSessionAnswer.length / this.itemsPerPage);
         },
+    paginationItemClasses() {
+    return this.useTests.testSessionAnswer.map((_, index) => ({
+      'answered-question': this.isQuestionAnswered(index),
+      'default-color': !this.isQuestionAnswered(index),
+    }));
+  },
+
 
         paginatedQuestions() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -300,27 +338,32 @@ export default {
             <v-row>
                 <v-col>
                     <div class="scrollWrapper" :style="{height: `${useHeightBoxQuestion}px`, overflowY: `auto`}" id="boxquestion">
+                        
                         <v-sheet  
                             v-for="(question, i) in paginatedQuestions"
                             :key="i + 1 + (currentPage - 1) * itemsPerPage"
                             :id="`questionId${i + 1 + (currentPage - 1) * itemsPerPage}`"
                             class="questionsBox"
-                            style="margin: 1rem auto; padding: 1rem 1rem 2rem 1rem;"
+                            style="margin: 1rem auto; padding: 1rem 1rem 1rem 1rem;"
                             color="white"
                             width="70%">
-                            <div v-if="question.questionTypeId == 3" class="d-flex">
-                                <div>
-                                    <v-img width="300" height="300" :src="question.questionName"></v-img>
+                            <div v-if="question.questionTypeId == 3" :class="{ 'd-flex': !question.questionName.includes(' ') }">
+                                <div v-if="!question.questionName.includes(' ')">
+                                    <v-img width="300" height="300" :src="question.image_link"></v-img>
+                                </div>
+                                <div v-else>
+                                    {{(i + 1) + (currentPage - 1) * itemsPerPage}}. {{question.questionName}}
+
                                 </div>
                                 <div style="padding: 2rem 0 0 2rem">
                                 <label class="container-radio" v-for="(answer,j) in question.answers" :key="j">
                                     {{answer.name}}
-                                <input type="radio" :class="`questionAnswerClassInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :id="`questionID${i + 1 + (currentPage - 1) * itemsPerPage}AnswerId${j+1}`" :name="`questionAnswerNameInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
+                                    <input type="radio" :class="`questionAnswerClassInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :id="`questionID${i + 1 + (currentPage - 1) * itemsPerPage}AnswerId${j+1}`" :name="`questionAnswerNameInput${i + 1 + (currentPage - 1) * itemsPerPage}`" :value="answer.answerId" v-model="question.userAnswerId" @change="checkRadio">
                                     <span class="checkmark">
-                                        <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i+1}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
+                                        <v-icon style="color: #2196f3; top: -10px; font-size: 30px; left: -2px;" v-if="useActiveCheckMark.includes(`questionID${i + 1 + (currentPage - 1) * itemsPerPage}AnswerId${j+1}`)" class="link-icon">mdi-check</v-icon>
                                     </span>
                                 </label>
-                                </div>
+                            </div>
                                  
                             </div>
                             
@@ -347,28 +390,45 @@ export default {
                             </div>
                             </div>
                         </v-sheet>
-                    </div>
-                    <v-row>
-                        <v-col>
-                            <v-pagination v-if="totalPages > 1" v-model="currentPage" :length="totalPages" @input="changePage"></v-pagination>
-                        </v-col>
-                    </v-row>
-                </v-col>
-                
-            </v-row>
-            <v-row>
-                <v-col>
-                    <div style="display: flex; justify-content: center;">
+          
+                        <CustomPaginationVue
+                        v-if="this.testType != 2"
+                        :total-pages="totalPages"
+                        :current-page="currentPage"
+                        :visible-pages="totalPages" 
+                        :is-question-answered="isQuestionAnswered"
+                        @update:currentPage="changePage"
+                        ></CustomPaginationVue>
+
+                        <div style="display: flex; justify-content: center;">
                         <v-btn
+                        class="mt-10"
                         depressed
                         color="primary"
-                        @click="endTest"
+                        @click="endTestDialog"
                         >
                         ЗАВЕРШИТЬ
                         </v-btn>
                     </div>
+                    </div>
                 </v-col>
+                
             </v-row>
+            <v-dialog v-model="endDialog" max-width="550">
+            <v-card>
+                <v-card-title class="text-h6 font-weight-bold">
+                    Подтвердите свой выбор: Завершение теста
+                </v-card-title>
+                <v-card-text>
+                    Вы уверены, что хотите завершить тест?
+                </v-card-text>
+                <v-card-actions class="d-flex justify-center">
+                    <v-btn color="primary" @click="endTest">Подтвердить</v-btn>
+                    <v-btn color="error" @click="cancelEndTest">Отмена</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+            
         </div>
 
 
@@ -448,6 +508,10 @@ export default {
             </v-card>
             
         </v-dialog>
+        
+
+
+
     </section>
 </template>
 
@@ -458,6 +522,10 @@ export default {
     padding: 20px;
     border: 2px solid rgb(185, 1, 1);
 }
+ .answered-question {
+        background-color: #4caf50; /* or any color you prefer */
+        color: white; /* adjust text color if needed */
+    }
 
 .container-radio {
   display: block;
@@ -476,6 +544,9 @@ export default {
   position: absolute;
   opacity: 0;
   cursor: pointer;
+}
+.pagination_item{
+    color: blue;
 }
 
 .checkmark {

@@ -651,7 +651,6 @@ async function putTestSessionAnswerDB(client: Client, bind: any) {
     }
 }
 async function putTestSessionEssayDB(client: Client, bind: any) {
-    console.log('put essay on table', bind);
 
     try {
         let queryBind = [];
@@ -863,7 +862,6 @@ export async function test_competency_postDB(client: Client, bind: any) {
 }
 export async function test_competency_putDB(client: Client, bind: any) {
     try {           
-        console.log('pre query')
         await client.query({
             text: `
                 update hr.test_competency_result set grade = $1, report_text = $2, status = 'Проверено' where test_session_id = $3`,

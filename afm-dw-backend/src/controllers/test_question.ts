@@ -285,10 +285,9 @@ export async function test_competency_post (req: express.Request, res: express.R
 export async function test_competency_put (req: express.Request, res: express.Response, next: express.NextFunction) {
     let client: Client | null = null;
     try {
-        console.log('put test competency')
+        
         client = get_client(); await client.connect();
         const bind: any = createBind(req);
-        console.log(bind)
         await test_competency_putDB(client, bind);
 
         res.locals.data = {
@@ -526,7 +525,7 @@ async function createTestSession(req: express.Request, res: express.Response, ne
         else{
             questionIds = db_questionIds;                    // multiple choice questions
         }
-        
+        console.log('createTestSession')
         const testSessionId = await createTestSessionDB(client, {
             lang: bind.lang,
             employeeId: parseInt(bind.employeeid, 10),
@@ -535,15 +534,15 @@ async function createTestSession(req: express.Request, res: express.Response, ne
             create_user: bind.user_name,
             update_user: bind.user_name,
         });
+        
         if(questionIds[0].test_question_type_id != 2){
             for (let i = 0; i < questionIds.length; i++) {
 
                 const correctAnswerId = (await test_answer_get_db({
                     testquestionid: questionIds[i].id,
                     lang: bind.lang
-                },client)).find((item: any) => item.is_correct);
-                
-
+                },client)).find((item: any) => item.is_correct);   // доп проверка
+                console.log(correctAnswerId)
                 await createTestSessionAnswerDB(client, {
                     testSessionId: testSessionId.id,
                     questionId: questionIds[i].id,
@@ -590,15 +589,15 @@ async function putTestSession(req: express.Request, res: express.Response, next:
         const bind: any = createBind(req); 
         
         const isEssay = bind.testsessionanswer[0].isEssay;
-       
         const allTestSessionAnswer = await getTestSessionAnswerDB(client, {
             lang: bind.lang,
             testSessionID: parseInt(bind.testsessionid, 10)
         });
-    
+       
      
 
         let currentAnswerUserCount = 0;
+       
         if(bind.testsessionanswer[0].isEssay){
             await putTestSessionEssayDB(client, {
                 test_session_id: parseInt(bind.testsessionid, 10),
@@ -610,20 +609,18 @@ async function putTestSession(req: express.Request, res: express.Response, next:
 
             
    
-            
                 const testSessionAnswer = allTestSessionAnswer.find((item: any) => item.question_id === bind.testsessionanswer[i].questionId && item.test_session_id === parseInt(bind.testsessionid, 10));
             if (testSessionAnswer.correct_answer_id === bind.testsessionanswer[i].userAnswerId) {
                 currentAnswerUserCount += 1;
             }
-
             await putTestSessionAnswerDB(client, {
                 userAnswerId: bind.testsessionanswer[i].userAnswerId,
                 id: testSessionAnswer.id
             })
+            
         }
         }
         
-
         await putTestSessionDB(client, {
             updateUser: bind.user_name,
             testQuestionCorrectQty: currentAnswerUserCount,
@@ -633,6 +630,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
         })
         
         if(bind.testType != 3){
+            
             await test_competency_postDB(client, {
                 test_session_id: parseInt(bind.testsessionid, 10),
                 test_id: parseInt(bind.testid, 10)
@@ -648,7 +646,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
             lang: bind.lang,
             testId: parseInt(bind.testid, 10)
         });
-        console.log(testSession[0].start_time)
+
         res.locals.data = {
             statusCode: 200,
             data: {
@@ -781,7 +779,6 @@ async function getTestList (req: express.Request, res: express.Response, next: e
             });
             result = {...result[0], startTime: new Date(checkPassedTest[0].start_time ), testSessionAnswer: []}; // adding starTime(with value)
             //and testSession answer(empty array)
-            console.log(result)
             const db_getQuestionByTestID = await test_question_get_db({ test_id: result.test_id, lang: bind.lang }, client);
 
             let getQuestionByTestID: string | any[] = [] // Create a shallow copy to avoid modifying the original array
@@ -810,7 +807,7 @@ async function getTestList (req: express.Request, res: express.Response, next: e
                 question.answers = question.answers.sort((a: any, b : any) => 0.5 - Math.random())
                 result.testSessionAnswer.push(question)  // adding answers to array
             }
-                result.testSessionAnswer = result.testSessionAnswer.sort((a: any, b : any) => 0.5 - Math.random())  // randomizing order of elements in array
+                // result.testSessionAnswer = result.testSessionAnswer.sort((a: any, b : any) => 0.5 - Math.random())  // randomizing order of elements in array
                 
         }
 
