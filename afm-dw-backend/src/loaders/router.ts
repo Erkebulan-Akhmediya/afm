@@ -202,9 +202,9 @@ export const routes = (app: express.Application) => {
     router.get('/essay-lists', getEssayList)
     router.get('/test-session', getTestSession) 
     router.get('/test-session-answer', getTestSessionAnswer) 
-    router.get('/test-competency', test_competency_get)
     router.get('/test-session-essay', getTestSessionEssay)
-    router.post('/test_competency', test_competency_post );
+    router.get('/test_competency', test_competency_get)
+    router.post('/test_competency', test_competency_post )
     router.put('/test_competency', test_competency_put)
 
     router.get('/test-rating', getRatingTest) 

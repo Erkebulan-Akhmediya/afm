@@ -6,6 +6,7 @@
     :items-per-page="10"
     class="elevation-1"
     @click:row="onRowClick"
+    :loading="loader2"
   >
   <template v-slot:[`item.id`]="{ item }">
           {{ item.id }}
@@ -22,9 +23,9 @@
 
   </v-data-table>
       <v-dialog max-width="1500" v-model="checkTest">
-        <v-card class="pt-3">
-            <v-card-title class="text-h4 pb-5">
-                Проверка опроса по определений личностных качеств
+        <v-card>
+            <v-card-title class="text-h4 pb-5 pt-5 text-h" style="background-color: rgb(199, 199, 199);">
+                {{this.test_id == 30 ? `Проверка опроса по определений личностных качеств` : `Проверка Эссе`}}
             </v-card-title>
            <v-card-text>
           <v-list>
@@ -72,7 +73,7 @@
         <v-card-text v-if="editItem.status == 'Не проверено'">
           <div class="text-h5 mt-5 mb-5">Оценка</div>
           <v-textarea v-model="score" label="Оценка" outlined></v-textarea>
-          <v-textarea v-model="report" label="Отчет" outlined rows="5"></v-textarea>
+          <v-textarea v-model="report" label="Хоарактеристика" outlined rows="5"></v-textarea>
           <v-btn :loading="loader1" @click="sendReport(false)" :disabled="!score || !report" color="primary">
             Отправить
           </v-btn>
@@ -116,6 +117,7 @@
         score: '',
         report: '',
         loader1: false,
+        loader2: false,
         editItem: {},
         checkItem: {},
       };
@@ -148,17 +150,20 @@
           }
       },
       onRowClick(item) {
+        this.loader2 = true
         this.sessionID = item.test_session_id;
         this.checkItem = item
         this.editItem = item
         this.getSessionResults()
-        this.checkTest = true;
+        
       },
       async getSessionResults(){
         const params = {
             test_session_id: this.sessionID
         }
         this.sessionAnswers = await this.axios.get(`/api/1.0/test-session-answer`, {params})
+        this.loader2 = false
+        this.checkTest = true;
         console.log('advance session', this.sessionAnswers)
       },
 
@@ -171,7 +176,8 @@
         const params = {
           test_id: this.test_id,
         };
-        const data = await this.axios.get(`/api/1.0/test-competency`, { params });
+        console.log('get sessions')
+        const data = await this.axios.get(`/api/1.0/test_competency`, { params });
         this.sessions = data.data
         console.log('new data', data)
         console.log('session',this.sessions)

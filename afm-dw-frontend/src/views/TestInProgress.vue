@@ -368,7 +368,7 @@ export default {
                             </div>
                             
                             <div v-if="question.questionTypeId == 2" width="100%">
-                                <div>
+                                <div class="text-h5">
                                     Тема: {{question.questionName}}
                                 </div>
                                 <v-textarea v-model="essay" height="500" class="mt-10 no-paste" label="Эссе" outlined @paste="preventPaste"></v-textarea>

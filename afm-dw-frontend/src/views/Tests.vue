@@ -32,10 +32,15 @@ export default {
                 const {data} = await this.axios.get(`/api/1.0/test-lists`, {
                     params: {
                         employeeId: sessionStorage.getItem('userId'),
-                        name: this.useSearch
+                        name: this.useSearch,
+                        test_filter: true,
                     }
                 });
+                
                 this.useTests = data;
+                
+                
+                console.log('useTest', this.useTests)
             } catch (e) {
                 console.log(e);
             }
@@ -63,50 +68,9 @@ export default {
 <template>
     <section>
         <div id="tests">
-            <v-row>
-                <v-col>
-                   <h2>{{$t('mainPage.mainMenu.tests')}}</h2> 
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <div style="display: flex;">
-                        <v-text-field
-                            style="max-width: 500px;"
-                            class="mr-4"
-                            hide-details 
-                            v-model="useSearch"
-                            :label="`Поиск теста`"
-                            required
-                            outlined
-                            @keydown.enter="search" />
-                        <v-btn
-                            class="mr-4"
-                            height="55"            
-                            style="width:150px;"
-                            text
-                            outlined
-                            right
-                            color="secondary"
-                            @click="search"
-                        >
-                            Поиск
-                        </v-btn>
-                        <v-btn
-                            height="55"            
-                            style="width:150px;"
-                            text
-                            outlined
-                            right
-                            color="secondary"
-                            @click="search({resetData: true})"
-                        >
-                            Сброс
-                        </v-btn> 
-                    </div>
-                </v-col>
-            </v-row>
-            <v-row>
+            <p class="text-h4 ml-3 mb-10" v-if="this.useTests.length">Доступные тесты</p>
+            <v-row >
+                
                 <v-col>
                     <v-expansion-panels>
                         <v-expansion-panel
@@ -146,7 +110,14 @@ export default {
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </v-col>
+                
             </v-row>
+            <v-card class="pa-3" v-if="!this.useTests.length">
+          <v-card-title class="headline">Вы прошли все тесты!</v-card-title>
+          <v-card-text>
+            Ожидайте результатов.
+          </v-card-text>
+        </v-card>
         </div>
 
 

@@ -419,11 +419,11 @@ async function getTestSession (req: express.Request, res: express.Response, next
     try {
         client = get_client(); await client.connect();
         const bind: any = createBind(req);          
-
         const sessions = await getTestSessionDB(client, {
-            testId: parseInt(bind.testid, 10),
+            test_id: parseInt(bind.test_id, 10),
             employee_name: bind.employee_name,
-            lang: bind.lang
+            lang: bind.lang,
+            employee_id: parseInt(bind.employee_id, 10),
         });
 
                 res.locals.data = {
@@ -525,7 +525,6 @@ async function createTestSession(req: express.Request, res: express.Response, ne
         else{
             questionIds = db_questionIds;                    // multiple choice questions
         }
-        console.log('createTestSession')
         const testSessionId = await createTestSessionDB(client, {
             lang: bind.lang,
             employeeId: parseInt(bind.employeeid, 10),
@@ -542,7 +541,6 @@ async function createTestSession(req: express.Request, res: express.Response, ne
                     testquestionid: questionIds[i].id,
                     lang: bind.lang
                 },client)).find((item: any) => item.is_correct);   // доп проверка
-                console.log(correctAnswerId)
                 await createTestSessionAnswerDB(client, {
                     testSessionId: testSessionId.id,
                     questionId: questionIds[i].id,
@@ -587,7 +585,7 @@ async function putTestSession(req: express.Request, res: express.Response, next:
 
         await client.query('BEGIN');
         const bind: any = createBind(req); 
-        
+
         const isEssay = bind.testsessionanswer[0].isEssay;
         const allTestSessionAnswer = await getTestSessionAnswerDB(client, {
             lang: bind.lang,
@@ -598,11 +596,14 @@ async function putTestSession(req: express.Request, res: express.Response, next:
 
         let currentAnswerUserCount = 0;
        
-        if(bind.testsessionanswer[0].isEssay){
-            await putTestSessionEssayDB(client, {
-                test_session_id: parseInt(bind.testsessionid, 10),
-                essay: bind.testsessionanswer[0].essay
-            })
+        if(isEssay){
+            if(bind.testsessionanswer[0].essay != ""){
+                await putTestSessionEssayDB(client, {
+                    test_session_id: parseInt(bind.testsessionid, 10),
+                    essay: bind.testsessionanswer[0].essay
+                })
+            }
+            
         }
         else{
             for (let i = 0; i < bind.testsessionanswer.length; i++) {
@@ -633,7 +634,8 @@ async function putTestSession(req: express.Request, res: express.Response, next:
             
             await test_competency_postDB(client, {
                 test_session_id: parseInt(bind.testsessionid, 10),
-                test_id: parseInt(bind.testid, 10)
+                test_id: parseInt(bind.testid, 10),
+                employee_id: parseInt(bind.employeeid, 10),
             })
         }
         
@@ -768,6 +770,7 @@ async function getTestList (req: express.Request, res: express.Response, next: e
             lang: bind.lang,
             testId: bind.testid,
             ispageemployeepassingtest: bind.ispageemployeepassingtest,
+            test_filter: bind.test_filter ? bind.test_filter : false,
         })
         
 
@@ -804,7 +807,7 @@ async function getTestList (req: express.Request, res: express.Response, next: e
                     questionName: null,
                     answers: []
                 })
-                question.answers = question.answers.sort((a: any, b : any) => 0.5 - Math.random())
+                // question.answers = question.answers.sort((a: any, b : any) => 0.5 - Math.random())
                 result.testSessionAnswer.push(question)  // adding answers to array
             }
                 // result.testSessionAnswer = result.testSessionAnswer.sort((a: any, b : any) => 0.5 - Math.random())  // randomizing order of elements in array

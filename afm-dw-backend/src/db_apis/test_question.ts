@@ -354,10 +354,10 @@ async function getTestSessionDB(client: Client, bind: any) {
     try {
         let sql_where_clause = ''
         let queryBind = []
-        if(bind.testId) {
+        if(bind.test_id) {
             sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} test_id = $${queryBind.push(bind.testId)}`
         }
-        if(bind.employeeId) {
+        if(bind.employee_id) {
             sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} employee_id = $${queryBind.push(bind.employeeId)}`
         }
         if(bind.employee_name) {
@@ -541,7 +541,8 @@ async function getTestSessionAnswerDB(client: Client, bind: any) {
         join hr.test_question q on tsa.question_id = q.id
         left join hr.test_answer a on tsa.user_answer_id = a.id
         join hr.test_answer ac on tsa.correct_answer_id = ac.id
-        ${sql_where_clause}`
+        ${sql_where_clause}
+        order by id`
         let {rows: data}: any = await client.query(query, queryBind)
         
         return data;
@@ -808,13 +809,14 @@ async function getTestListDB(client: Client, bind: any) {
             tda.test_id = t.id 
             and (tda.department_id = e.department_id or tda.department_id = -1)  
             and tda.is_active = true
+            ${bind.test_filter == true ? `and t.id not in (select test_id from hr.test_session where employee_id = ${bind.employeeId})` : ``} 
         ${bind.ispageemployeepassingtest ? `and now() >= ts.end_time and ts.employee_id = e.id and t.id = ts.test_id` : `and t.date_from < now() and now() < t.date_to`}
             and t.status_id in (2 ${bind.is_deleted ? ', 3 ' : ''})
         ${bind.name && bind.name.trim() ? `and t.name_${bind.lang} ilike '%${bind.name.trim()}%'` : ``}
         ${bind.testId ? `and t.id = ${bind.testId}` : ``}
         ${bind.ispageemployeepassingtest ? `order by ts.id desc` : ``}
         `
-        
+
         let {rows: data}: any = await client.query(query);
         return data;
     } catch (err) {
@@ -844,12 +846,13 @@ export async function test_competency_postDB(client: Client, bind: any) {
         await client.query({
             text: `
                 insert into hr.test_competency_result
-                    (test_session_id, test_id, grade, report_text, status)
+                    (test_session_id, test_id, grade, report_text, status, employee_id)
                 values
-                    ($1, $2, '', '', 'Не проверено') `,
+                    ($1, $2, '', '', 'Не проверено', $3) `,
             values: [
                 bind.test_session_id,
                 bind.test_id,
+                bind.employee_id
             ]
         }).catch((e: any) => { 
             throw `Ошибка hr.test_competency_postDB post db => ${e} ${JSON.stringify(bind)}`
@@ -880,15 +883,29 @@ export async function test_competency_putDB(client: Client, bind: any) {
     }
 }
 export async function test_competency_getDB(client: Client, bind: any) {
-    try {           
-        let {rows: data}: any = await client.query({
-            text: `
-            select * from hr.test_competency_result where test_id = $1 order by id desc
-                `,
-                values: [bind.test_id],
-        }).catch((e: any) => { 
-            throw `Ошибка hr.test_competency_getDB get db => ${e} ${JSON.stringify(bind)}`
-        });
+    try {
+        console.log(bind)
+        let sql_where_clause = ''
+        let queryBind = []
+        if(bind.test_id) {
+            console.log('testId')
+            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} test_id = $${queryBind.push(bind.test_id)}`
+        }
+        if(bind.employee_id) {
+            console.log('employeeId')
+            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} employee_id = $${queryBind.push(bind.employee_id)}`
+        }
+        if(bind.status){
+            console.log('status')
+            sql_where_clause += ` ${sql_where_clause.trim() ? ' and ' : 'where'} status = $${queryBind.push(bind.status)}`
+        }
+        let query = `
+        select * from hr.test_competency_result
+        ${sql_where_clause}
+        order by id desc`
+        console.log(query)
+        console.log(queryBind)
+        let {rows: data}: any = await client.query(query, queryBind)
         return data;
     } catch (err) {
         log.error(err)

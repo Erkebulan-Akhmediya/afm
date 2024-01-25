@@ -1,7 +1,7 @@
 <template>
       <div>
         <div class="text-h4 mb-10">
-          Проверка тестов компетенций
+          Проверка опроса по определений личностных качеств
 
         </div>
         <TestRespondents :test_id="30"></TestRespondents>
