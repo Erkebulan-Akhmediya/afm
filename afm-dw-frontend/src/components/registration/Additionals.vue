@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import sendFile from '../../utils/send_file.js'
+// import sendFile from '../../utils/send_file.js'
 
 export default {
     computed: {
@@ -13,18 +13,20 @@ export default {
     },
     methods: {
         async sendFile(event, str) {
-            const res = await sendFile(event);
-            // console.log(res.data);
+            event; str;
+            // const res = await sendFile(event);
 
-            if (str === 'adgs0') {
-                this.form.adgs_test[0].file_id = res.data.file_id;
-                return;
-            }
+            // if (str === 'adgs0') {
+            //     this.form.adgs_test[0].file_id = res.data.file_id;
+            //     this.form.adgs_test[0].name = 'АДГС 1';
+            //     return;
+            // }
 
-            if (str === 'adgs1') {
-                this.form.adgs_test[1].file_id = res.data.file_id;
-                return;
-            }
+            // if (str === 'adgs1') {
+            //     this.form.adgs_test[1].file_id = res.data.file_id;
+            //     this.form.adgs_test[1].name = 'АДГС 2';
+            //     return;
+            // }
         }
     },
 };
@@ -39,8 +41,8 @@ export default {
         
         <v-row>
             <v-text-field 
-                label="АДГС 1" 
-                v-model="form.adgs_test[0].results"
+                label="Результат" 
+                v-model="form.adgs_test[0].result"
                 :rules="[v => !!v || 'Обязательное поле']"
                 required
                 outlined
@@ -57,8 +59,8 @@ export default {
 
         <v-row>
             <v-text-field 
-                label="АДГС 2" 
-                v-model="form.adgs_test[1].results"
+                label="Результат" 
+                v-model="form.adgs_test[1].result"
                 :rules="[v => !!v || 'Обязательное поле']"
                 required
                 outlined

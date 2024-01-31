@@ -16,16 +16,7 @@ import {lov_get, lov_post, lov_put} from '../controllers/lov';
 import {add_view_event, event_get, event_get_files, event_post, event_put} from '../controllers/event';
 import {entry_get,entry_post,entry_put,entry_delete} from '../controllers/entry';
 import {create_user, change_user} from '../controllers/user';
-import {
-    file_disable,
-    file_get,
-    file_get_download,
-    file_post,
-    file_put,
-    get_file_name,
-    get_file_api,
-    file_link_get
-} from '../controllers/file';
+import { file_disable, file_get, file_get_download, file_post, file_put, get_file_name, get_file_api, file_link_get } from '../controllers/file';
 import {media_get} from '../controllers/media';
 import {doc_get, doc_getJbk, doc_getPen, doc_getExp, doc_getHoliday, get_holidays, pdf_workplace} from '../controllers/doc';
 import {know_base_get, know_base_post, know_base_delete, know_base_put} from '../controllers/know_base';
@@ -154,7 +145,7 @@ export const routes = (app: express.Application) => {
     router.get('/file/name/:id', get_file_name);  
 
 
-        router.get('/entity_type', entity_type_get); 
+    router.get('/entity_type', entity_type_get); 
     router.get('/declination', declination_get); 
     router.get('/language', language_get); 
     router.get('/gender', gender_get); 
@@ -164,10 +155,8 @@ export const routes = (app: express.Application) => {
     router.post('/inflected_word', inflected_word_post); 
 
     router.post('/reference/doc_workplace', doc_get); 
-
     router.post('/reference/pdf_workplace', pdf_workplace); 
-
-        router.post('/reference/doc_jbk', doc_getJbk); 
+    router.post('/reference/doc_jbk', doc_getJbk); 
     router.post('/reference/doc_getHoliday', doc_getHoliday);  
     router.post('/reference/doc_Pen', doc_getPen); 
     router.post('/reference/doc_Exp', doc_getExp); 

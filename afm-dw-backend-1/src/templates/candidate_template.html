@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+ <html>
+    <head>
+        <mate charest="utf-8" />
+        
+        <title>Hello world!</title>
+        <style>
+            tr, td { page-break-inside: avoid; }
+
+            body {
+                font-family: "Times New Roman", Times, serif;
+                font-size: 16px;
+            }
+            strong {
+                font-size: 16px;
+            }
+            h2 {
+                font-size: 16px;
+                font-weight: normal;
+            }
+            ul {
+                list-style: none;
+            }
+            li {
+                margin: 2px;
+                padding: 0px;
+            }
+            .referenceTable td{
+                border: 1px solid #000;
+                padding: 2px 16px;
+            }
+            .referenceTable td.head {
+                text-align: center;
+                font-weight: bold;
+            }
+            .clearfix {
+                overflow: auto;
+            }
+            .clearfix::after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+            .referenceTable td.text-left {
+                text-align: left;
+                padding-left: 2px;
+            }
+            .referenceTable .pad0 {
+                padding: 2px 3px;
+            }
+            .wrap {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            .general_info {
+                text-align: left; 
+                font-weight: normal;
+                font-size: 16px;
+                margin-bottom: 2px!important;
+                margin-top: 3px!important;
+            }
+
+            .column {
+                float: left;
+                width: 50%;
+            }
+
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- <div class="row">
+            <div class="column" style="float: left; text-align: left; width: 33%; font-size: 25px;"><i>ID документа: 91827311021</i></div>
+            <div class="column" style="color:darkgray; float: left; text-align: center; width: 33%; font-size: 30px;"><b>АИС "Цифровое рабочее место"</b></div>
+            <div class="column" style="float: left; text-align: right; width: 33%; font-size: 25px;"><i>Сформирован: 06.09.2022 15:48</i></div>
+        </div> -->
+
+        <div class="clearfix">
+            <h1 style="text-align: center; font-size: 19px;">Справка об изучении кандидата на службу <br/> по заявке №{{request_id}}</h1>
+            <h2 style="text-align: center; font-size: 16px; margin-top: -10px;">(в порядке перевода/по внеконкурсному отбору)</h2>
+            <div style="float: left; width: 70%;">
+                <h1 style="text-align: left;  font-size: 16px;">{{last_name}} {{first_name}} {{middle_name}}</h1>
+                <h2 class="general_info">ИИН: {{identification_number}}</h2>
+                <h2 class="general_info">Дата рождения: {{#if birth_date}} {{birth_date}} {{^}} 
+                <i> нет данных </i> {{/if}} </h2>
+                {{#each contacts}}
+                <h2 class="general_info">{{contact_name}}: {{contact}}</h2>
+                {{/each}}
+                <h2 class="general_info">Семейное положение: {{#if marital_status}} {{marital_status}} {{^}} 
+                <i> нет данных </i> {{/if}} </h2>
+            </div>
+            <div style="float: right; width: 30%;">
+                {{#if src}}
+                    <img style="float: right; width: 132px; height: 187px;" src="{{src}}" alt="">
+                {{/if}}
+            </div>
+        </div>
+
+        <h1 style="text-align: left; font-size: 16px;">Данные по назначению:</h1>
+        <!--<h2 class="general_info">Организация: {{request_organization}}</h2>-->
+        <h2 class="general_info">Структурное подразделение: {{request_full_department}}</h2>
+        <h2 class="general_info">Выдвигается на должность: {{request_position}}</h2>
+        <h2 class="general_info">Ф.И.О. руководителя ходатайствующего о назначении: {{request_from}}</h2>
+        
+        <div style="margin-top: 20px;">
+            <h2><strong>1. Образование: </strong> {{#if education}} {{#each education}} <i> {{ed_type}}, {{enrollment_date}} {{institution}} по специальности "{{speciality}}"; </i> {{/each}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+
+            <h2><strong>2. Знание языков, наличие курсов повышения квалификации: </strong> {{#if languages_or_qualification_exists}} 
+                {{#each languages}} <i> {{language_name}} ({{language_level}}); </i> {{/each}} 
+                {{#each qualification}} <i> {{doc_number}} - {{description}}; </i> {{/each}}
+            {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+
+            <h2><strong>3. Где проживают и кем работают родители и близкие родственники: </strong> {{#if relations}} <ul>{{#each relations}}
+                <i><li>{{relation_type}}: {{last_name}} {{first_name}} {{middle_name}}, {{work_place}} - {{position}}</li></i>
+                {{/each}}
+            </ul> {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+
+            <h2><strong>4. Родственники супруг/супруга в правоохранительных органах, действующие и в прошлом: </strong> {{#if relations_in_law}} <ul>{{#each relations_in_law}}
+                <i><li>{{relation_type}}: {{last_name}} {{first_name}} {{middle_name}}, {{work_place}} - {{position}}, {{is_active_work_law}} {{law_agency}} - {{law_position}}  </li></i>
+                {{/each}}
+            </ul>  {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+        </div>
+
+        <!-- <h2 style="text-align: center; text-transform: uppercase; font-size: 25px; color: rgb(0, 148, 184); margin-bottom: 10px; margin-top: 10px;">Опыт работы</h2> -->
+
+        <h2><strong>5. Опыт работы: </strong> <i> {{#if work_list}} 
+        <table class="referenceTable" style="border-collapse: collapse; width:100%;">
+            <tr>
+                <td colspan="2" class="head">Дата</td>
+                <td rowspan="2" class="head">Должность, место работы, местонахождение организации</td>
+                <td rowspan="2" class="head">Причина увольнения</td>
+            </tr>
+            <tr>
+                <td class="head">Приема</td>
+                <td class="head">Увольнения</td>
+            </tr>
+            {{#each work_list}}
+            <tr>
+                <td class="text-center">{{date_from}}</td>
+                <td class="text-center">{{date_to}}</td>
+                <td class="pad0">{{position}}, {{work_place}}</td>
+                <td class="pad0">{{reason_for_dismissal}}</td>
+            </tr>
+            {{/each}}
+        </table> 
+        {{^}} нет данных {{/if}}
+        </i></h2> 
+        
+        <div>
+            <h2><strong>6. Характеристики/рекомендательные письма с последних мест работы(контакты): </strong> <i>{{#if conclusive_conclusion_oldwork}} {{conclusive_conclusion_oldwork}} {{^}} нет данных {{/if}}
+            </i></h2>
+            <h2><strong>7. Результаты тестов на знание законодательства и сдачи нормативов по физ.подготовке: </strong> {{#if test_result}} {{#each test_result}} <i> {{description}} - {{result}}; </i> {{/each}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+            <h2><strong>8. Имеющиеся достижения: </strong> {{#if achievement}} {{#each achievement}} <i> {{description}}; </i> {{/each}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+            <h2><strong>9. Увлечения: </strong> <i> {{#if other_interest}} {{other_interest}} {{^}} нет данных {{/if}}
+            </i></h2> 
+            
+            <h2><strong>10. Имеется ли зарегистрированное оружие: </strong> {{#if weapon}} {{#each weapon}} <i> {{weapon_type}} - {{brand}} {{model}} №{{weapon_number}}, подтверждающий документ:{{confirming_document}}; </i> {{/each}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+            
+           
+            <h2><strong>11. Дисциплинарные взыскания: </strong> 
+                {{#if disciplinary_exists}}
+                    <ul>{{#each disciplinary}}
+                        <i><li><b>{{offense_date}}</b>: {{disciplinary_type}} ({{description}})</li></i>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+                {{#if disciplinary_not_exists}}
+                    <i>нет данных</i>
+                {{/if}}
+            </h2>
+            <h2><strong>12. Наличие негативных зависимостей: </strong> <i> {{#if negative_dependency}} {{negative_dependency}} {{^}} нет данных {{/if}}
+            </i></h2>
+            <h2><strong>13. Наличие недвижимости, автотранспорта: </strong> {{#if apartments_or_car_exists}} 
+                {{#each apartments}}
+                <i>{{apartment_type}}, {{apartment_address}}; </i>
+                {{/each}}
+
+                {{#each car}}
+                <i>{{vehicle_number}}, {{brand}} {{model}}; </i>
+                {{/each}}
+            {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+
+            <h2><strong>14. Наличие финансовых обязательств(ежемесячная сумма выплат): </strong> {{#if fncl_obligation}} 
+            {{#each fncl_obligation}}
+                <i>
+                {{type}}, ежемесячно {{payment_amount}} тг.;
+                </i>
+            {{/each}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+            <h2><strong>15. Выезд за границу (год, страна, цель выезда): </strong>  
+                {{#if abroad_exists}}
+                    {{#each abroad}} <i> {{abroad_year}} {{country}}, {{departure_purpose}}; </i> {{/each}}
+                {{/if}}
+                {{#if abroad_not_exists}} <i>нет данных</i> {{/if}}
+            </h2>
+            <h2><strong>16. Проверочные материалы: </strong>  
+                <ul>
+                    <li><strong>Заключение КНБ РК: </strong> <i>{{conclusive_knb}}</i></li>
+                    <li><strong>Заключение ВВК: </strong> <i>{{conclusive_vvk}}</i></li>
+                </ul>
+            </h2>
+            <h2><strong>17. Прочая информация: </strong> {{#if other_information}} {{other_information}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+            <h2><strong>18. Отношение к религии: </strong> {{#if religion}} {{religion}} {{^}} 
+            <i> нет данных </i> {{/if}} </h2>
+            <h2><strong>19. Результаты согласования: </strong> (на {{generate_date}})
+                {{#if approvedata_exists}}
+                    <ul>{{#each approvedata}}
+                        <i><li><b>{{approve_date}}</b>: {{approve_full_name}} - {{approve_item_status}} {{approve_comment}}</li></i>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+                {{#if approvedata_not_exists}}
+                    <i>нет данных</i>
+                {{/if}}
+            </h2>
+        </div>
+
+        <p><strong>Составил:</strong> <br/> <i> {{requestcreator.position_name}}, {{requestcreator.last_name}} {{requestcreator.first_name}} {{requestcreator.middle_name}} </i> <br/> <i> {{requestcreator.department_full_list}} </i>
+        </p>
+        <p><strong>Кандидат:</strong> <br/> <i> {{last_name}} {{first_name}} {{middle_name}} </i>
+        </p>
+        
+    </body>
+</html>    

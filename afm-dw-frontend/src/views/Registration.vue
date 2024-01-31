@@ -1,6 +1,8 @@
 <script>
 import axios from 'axios';
+import Cookies from 'js-cookie'
 import { mapGetters } from 'vuex';
+import * as crypto from 'crypto-js';
 import FormTitle from '../components/registration/FormTitle.vue';
 import GeneralInfo from '../components/registration/GeneralInfo.vue'
 import Education from '../components/registration/Education.vue'
@@ -34,15 +36,24 @@ export default {
                 formData.append(key, this.form[key]);
             }
             try {
-                await axios.post(
+                const res = await axios.post(
                     'http://localhost:8000/api/1.0/auth/register',
-                    formData,
-                    {
-                        headers: {
-                            'Content-type': 'multipart/form-data',
-                        },
-                    }
+                    this.form,    
                 );
+                if (res.status === 200) {
+                    sessionStorage.setItem('token', res.data.access_token);
+                    sessionStorage.setItem('refresh', res.data.refresh_token);
+                    sessionStorage.setItem('userId', res.data.user_id);
+                    sessionStorage.setItem('role', res.data.role_id);
+                    sessionStorage.setItem('roleName', res.data.role_name);
+
+                    Cookies.set('userId', res.data.user_id, { expires: 365 });
+
+                    const encrypted_id = crypto.AES
+                        .encrypt(res.data.user_id, 'secret-key').toString();
+                        
+                    this.$router.push(`/employees/${encrypted_id}`);
+                }  
             } catch(err) {
                 console.log('registration failed');
             }

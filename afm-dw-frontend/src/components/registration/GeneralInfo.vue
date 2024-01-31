@@ -37,6 +37,20 @@ export default {
             required
         ></v-text-field>
 
+        <v-text-field 
+            label="Имя поользователя" 
+            v-model="form.username"
+            :rules="[v => !!v || 'Обязательное поле']"
+            required
+        ></v-text-field>
+
+        <v-text-field 
+            label="Пароль" 
+            v-model="form.password"
+            :rules="[v => !!v || 'Обязательное поле']"
+            required
+        ></v-text-field>
+
         <v-menu 
             v-model="birthdateMenu" 
             :close-on-content-click="false"
@@ -119,12 +133,12 @@ export default {
 
         <v-checkbox
             label="Прошел воинскую службу"
-            v-model="form.military_vow"
+            v-model="form.military_duty"
         ></v-checkbox>
 
         <v-checkbox 
             label="Женат / Замужем"
-            v-model="form.other_adm_penalties"
+            v-model="form.is_married"
         ></v-checkbox>
 
     </v-form>

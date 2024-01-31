@@ -1,0 +1,119 @@
+version: '3.10'
+
+networks:
+  default: {}
+
+volumes:
+  postgres-data: {}
+
+x-shared-environment: &shared-environment
+  NODE_ENV: "production"
+
+  ENV: "PROD"
+
+  POSTGRES_DB: "afm"
+  POSTGRES_USER: "afm"
+  POSTGRES_PASSWORD: "afm007"
+  POSTGRES_HOST: "pgbouncer"
+  POSTGRES_PORT: "5432"
+
+  CONFIG_FILE: '/src/config/config_prod.json'
+  
+  SOAP_WSDL_EMPLOYEE_FILE: "src/soap/wsdl/employee_prod.wsdl"
+  LOGGER_LEVEL: "debug"
+  MIDDLEWARE_MORGAN_SKIP: "1"
+  APPLICATION_WITH_CRON: "0"
+
+
+x-base-image: &base-image
+  restart: always
+  environment:
+    <<: *shared-environment
+  networks:
+    default: {}
+  logging:
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-base-app: &app
+  <<: *base-image
+  hostname: app
+  build:
+    context: .
+    platforms:
+      - linux/amd64
+    args:
+      - NODE_VERSION=16
+    shm_size: '2gb'
+  platform: linux/amd64
+  shm_size: '2gb'
+  command: start.sh
+  depends_on:
+    - pgbouncer
+
+services:
+  pgbouncer:
+    hostname: pgbouncer
+    build:
+      context: .
+      dockerfile: devops/dockerfiles/Dockerfile.pgbouncer
+    environment:
+      DB_USER: "afm"
+      DB_PASSWORD: "afm007"
+
+  app-1:
+    <<: *app
+    hostname: app-1
+    environment:
+      <<: *shared-environment
+      APPLICATION_WITH_CRON: "1"
+  app-2:
+    <<: *app
+    hostname: app-2
+  app-3:
+    <<: *app
+    hostname: app-3
+  app-4:
+    <<: *app
+    hostname: app-4
+  app-5:
+    <<: *app
+    hostname: app-5
+  app-6:
+    <<: *app
+    hostname: app-6
+  app-7:
+    <<: *app
+    hostname: app-7
+  app-8:
+    <<: *app
+    hostname: app-8
+
+  proxy:
+    <<: *base-image
+    hostname: proxy
+    build:
+      context: .
+      dockerfile: devops/dockerfiles/Dockerfile.nginx
+    ports:
+      - 8000:8000
+    environment:
+      TZ: 'Asia/Almaty'
+    depends_on:
+      - app-1
+      - app-2
+      - app-3
+      - app-4
+      - app-5
+      - app-6
+      - app-7
+      - app-8
+
+  autoheal:
+    restart: always
+    image: willfarrell/autoheal
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

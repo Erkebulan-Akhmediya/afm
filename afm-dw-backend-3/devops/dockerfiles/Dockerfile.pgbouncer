@@ -1,0 +1,3 @@
+FROM edoburu/pgbouncer
+
+COPY devops/configs/pgbouncer.ini /etc/pgbouncer/pgbouncer.ini

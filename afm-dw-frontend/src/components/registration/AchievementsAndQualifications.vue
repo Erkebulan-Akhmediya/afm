@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex'
-import sendFile from '../../utils/send_file.js'
+// import sendFile from '../../utils/send_file.js'
 
 export default {
     computed: {
@@ -31,18 +31,20 @@ export default {
             this.sports++;
             this.form.sports.push({});
         },
-        async sendFile(event, str) {
-            const res = await sendFile(event);
+        async sendFile(event, index, str) {
+            event; index; str;
+            // const res = await sendFile(event);
+            // console.log(res);
 
-            if (str === 'achievements') {
-                this.form.achievements[index].file_id = res.data.file_id;
-                return;
-            }
+            // if (str === 'achievements') {
+            //     this.form.achievements[index].file_id = res.data.file_id;
+            //     return;
+            // }
 
-            if (str === 'certeficates') {
-                this.form.certeficates[index].file_id = res.data.file_id;
-                return;
-            }
+            // if (str === 'certeficates') {
+            //     this.form.certeficates[index].file_id = res.data.file_id;
+            //     return;
+            // }
         }
     },
 };
@@ -67,7 +69,7 @@ export default {
             </v-col>
             <v-col cols="4">
                 <v-file-input 
-                    @change="sendFile($event, 'achievements')"
+                    @change="sendFile($event, index, 'achievements')"
                     label="Файл" 
                     v-model="form.achievements[index].file"
                     :rules="[v => !!v || 'Обязательное поле']"
@@ -96,7 +98,7 @@ export default {
             </v-col>
             <v-col cols="4">
                 <v-file-input 
-                    @change="sendFile($event, 'certeficates')"
+                    @change="sendFile($event, index, 'certeficates')"
                     label="Файл" 
                     v-model="form.certeficates[index].file"
                     :rules="[v => !!v || 'Обязательное поле']"

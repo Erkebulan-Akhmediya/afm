@@ -1,0 +1,64 @@
+{
+    "jwt": {
+        "secret-key-jwt": "this_is_secret_key_for_jwt",
+        "expiresIn": "900s"
+    },
+    "socket": {
+        "endPoint": "localhost"
+    },
+
+    "file": {
+        "endPoint": "localhost",
+        "port": 9000,
+        "useSSL": false,
+        "accessKey": "plQt4WdeMpQ2cakOMaUL",
+        "secretKey": "nAQ1lcDklyB2n7mzeBrKa6VTJndcGE25m1WsZdki"
+    },
+
+    "soap": {
+        "service": {
+            "employee": "http://localhost/AFM/ws/AFM_Integration.1cws",
+            "department": "http://localhost/AFM/ws/AFM_Integration.1cws",
+            "organization": "http://localhost/AFM/ws/AFM_Integration.1cws",
+            "invoc": "http://localhost/AFM/ws/oc.1cws",
+            "opvlists": "http://localhost/AFM/ws/OpvLists.1cws",
+            "acsdata": "http://localhost/AFM/ws/AFM_Integration.1cws",
+            "acsdatav2": "http://localhost/AFM/ws/AFM_Integration.1cws",
+            "position": "http://localhost/AFM/ws/AFM_Integration.1cws",
+            "salarylist": "http://localhost/AFM/ws/SalaryList.1cws"
+        },
+
+        "headers": {
+            "auth": "V3M6U3c="
+        }
+    },
+
+    "rest": {
+        "Auth_key": "Basic V3M6U3c=",
+        "getRequestStatus": "http://localhost/AFM/hs/Get_Request_Status",
+        "getReferenceObjective": "http://localhost/AFM/hs/afm_integration/reports/employee_reference/",
+        "getReferenceWorklist": "http://localhost/AFM/hs/afm_integration/reports/achievement_list/",
+        "AFM_Request": "http://localhost/AFM/hs/afm_integration/requests",
+        "getOrderTypes": "http://localhost/AFM/hs/afm_integration/get_orders_types",
+        "getOrder": "http://localhost/AFM/hs/afm_integration/orders",
+        "getACSData": "http://localhost/AFM/hs/afm_integration/reports/acs_data",
+        "candidates": "http://localhost/AFM/hs/afm_integration/candidates",
+        "approved_rank": "http://localhost/AFM/hs/afm_integration/approved_rank",
+        "approved_timesheet": "http://localhost/AFM/hs/afm_integration/approved_timesheet",
+        "employee_affordable_vacation": "http://localhost/afm/hs/afm_integration/employee/affordable_vacation/",
+        "getEmployee": "http://localhost/afm/hs/afm_integration/employee/"
+    },
+
+    "db": {
+        "ip": "localhost",
+        "user": "afm",
+        "password": "afm007",
+        "dbname": "afm2"
+    },
+
+    "active_directory": {
+        "url": "ldap://192.168.30.10",
+        "baseDN": "DC=afm,DC=gov,DC=kz",
+        "usernameDN": "afm.gov.kz"
+    }
+}
