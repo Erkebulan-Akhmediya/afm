@@ -27,7 +27,7 @@ export default {
     },
     methods: {
         async submitForm() {
-            console.log('workin')
+            console.log('working')
             if (this.form.candidate_agrees != true || this.form.candidate_responsible != true) {
                 this.$swal({
                     ...this.$optionAlert.fire,
